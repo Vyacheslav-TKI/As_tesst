@@ -7,7 +7,8 @@ int main()
 
     if (a < b)
     {
-        return pow(a, b);
+        printf("%d", (int)pow(a, b));
+        return 0;
     }
 
     if (a == b)

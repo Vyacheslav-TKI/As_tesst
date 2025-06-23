@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build and run C file",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-c",
+        "gcc -g -fdiagnostics-color=always '${file}' -o '${fileDirname}/${fileBasenameNoExtension}' -lm && '${fileDirname}/${fileBasenameNoExtension}'"
+      ],
+      "group": "build",
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${fileDirname}"
+      }
+    }
+  ]
+}

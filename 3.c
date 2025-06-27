@@ -11,7 +11,7 @@ int main()
 {
     int item;
 
-    scanf("%d", item);
+    scanf("%d", &item);
 
     switch(item)
     {

@@ -8,13 +8,18 @@ int main()
 
     do{ // сначала итерация - потом условие
         puts("Enter a code\n");
-        scanf("%d", &enter);
+        if (scanf("%d", &enter) != 1)
+        {
+            goto pass; // идем по метке
+        }
 
         while ((c = getchar()) != '\n' && c != EOF)
             { }
     } while(enter != pin);
 
     puts("Access permited\n");
+
+    pass: return 1; // метка
 
     return 0;
 }

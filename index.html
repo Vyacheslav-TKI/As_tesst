@@ -165,20 +165,36 @@
     .profile-info-menu {
       display: none;
       position: absolute;
-      top: 100%;
-      right: 0;
+      left: 0;
       background: white;
       border: 1px solid #ddd;
       border-radius: 6px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       z-index: 10;
       flex-direction: column;
-      min-width: 120px;
-      min-height: 240px;
+      max-width: 15%
     }
 
     .profile-info-menu.show {
       display: flex;
+    }
+
+    .profile-info-item {
+      padding: 8px 16px;
+      border: none;
+      background: none;
+      text-align: left;
+      font-size: 14px;
+      color: #212121;
+      width: 100%;
+    }
+
+    .exit-btn {
+      background: rgba(255, 0, 0, 0.75);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
     }
 
     .dropdown-item {
@@ -359,9 +375,10 @@
 <button class="myprofile-btn" onclick="showProfileInfo()">Иванов И.И.</button>
 
 <div class="profile-info-menu" id="profileInfoMenu">
-  <h2 class="dropdown-item" >Иванов Иван Иванович</h2>
-  <h3 class="dropdown-item" >Пользователь</h3>
-  <p class="dropdown-item" >Уровень 1</p>
+  <h2 class="profile-info-item" >Иванов Иван Иванович</h2>
+  <h3 class="profile-info-item" >Пользователь</h3>
+  <p class="profile-info-item" >Уровень 1</p>
+  <button class="exit-btn" onclick="exitProfile()">Выйти</button>
 </div>
 
 <div class="container">
@@ -673,6 +690,10 @@
       alert('Удалено — заглушка');
       // Здесь — DELETE-запрос к бэкенду
     }
+  }
+
+  function exitProfile() {
+    alert("Выход - зашлушка")
   }
 </script>
 

@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ЦЕЛКОН</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background: #f9f9fb;
+      color: #212121;
+    }
+
+    /* Хедер */
+    header {
+      background: white;
+      padding: 16px;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+
+    header h1 {
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      color: #333;
+    }
+
+    /* Навигация */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      padding: 12px 0;
+      background: #fff;
+      border-bottom: 1px solid #eee;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      font-size: 16px;
+      padding: 6px 16px;
+      cursor: pointer;
+      color: #555;
+    }
+
+    .tab-btn.active {
+      color: #007bff;
+      font-weight: bold;
+      border-bottom: 2px solid #007bff;
+    }
+
+    /* Основной контейнер */
+    .container {
+      max-width: 1000px;
+      margin: 24px auto;
+      padding: 0 20px;
+    }
+
+    /* Кнопка отчёта */
+    .report-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .report-btn:hover {
+      background: #0069d9;
+    }
+
+    /* Вкладки содержимого */
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Список файлов */
+    .file-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .file-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 16px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .file-info {
+      flex: 1;
+    }
+
+    .file-name {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .file-path {
+      font-size: 13px;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    .file-controls {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .menu-btn {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: #555;
+      width: 24px;
+      text-align: center;
+    }
+
+    /* Выпадающее меню */
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 10;
+      flex-direction: column;
+      min-width: 120px;
+    }
+
+    .dropdown-menu.show {
+      display: flex;
+    }
+
+    .profile-info-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 10;
+      flex-direction: column;
+      min-width: 120px;
+      min-height: 240px;
+    }
+
+    .profile-info-menu.show {
+      display: flex;
+    }
+
+    .dropdown-item {
+      padding: 8px 16px;
+      border: none;
+      background: none;
+      text-align: left;
+      cursor: pointer;
+      font-size: 14px;
+      color: #212121;
+      width: 100%;
+    }
+
+    .dropdown-item:hover {
+      background-color: #f5f5f5;
+    }
+
+    .status-badge {
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      color: white;
+      text-transform: uppercase;
+      min-width: 100px;
+      text-align: center;
+    }
+
+    .status-badge.changed { background-color: #F44336; }
+    .status-badge.unchanged { background-color: #4CAF50; }
+
+    .add-file-btn {
+      margin-top: 24px;
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+
+    .add-file-btn:hover {
+      background: #218838;
+    }
+
+     .myprofile-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: rgba(32, 32, 127, 0.125);
+      color: black;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .myprofile-btn:hover {
+      background: rgba(32, 32, 127, 0.25);
+    }
+
+    /* Статистика */
+    .stat-controls {
+      margin-bottom: 24px;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .stat-controls input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    canvas {
+      background: white;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+
+    /* Модальное окно отчёта */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+    }
+
+    .modal h3 {
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .file-list-check {
+      max-height: 120px;
+      overflow-y: auto;
+      border: 1px solid #eee;
+      padding: 8px;
+      border-radius: 4px;
+    }
+
+    .close-btn, .submit-btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .close-btn {
+      background: #ccc;
+      margin-right: 10px;
+    }
+
+    .submit-btn {
+      background: #007bff;
+      color: white;
+    }
+
+    .format-group {
+      display: flex;
+      gap: 12px;
+    }
+
+    .format-group label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>ЦЕЛКОН</h1>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" data-tab="files">Файлы</button>
+  <button class="tab-btn" data-tab="stats">Статистика</button>
+</div>
+
+<button class="myprofile-btn" onclick="showProfileInfo()">Иванов И.И.</button>
+
+<div class="profile-info-menu" id="profileInfoMenu">
+  <h2 class="dropdown-item" >Иванов Иван Иванович</h2>
+  <h3 class="dropdown-item" >Пользователь</h3>
+  <p class="dropdown-item" >Уровень 1</p>
+</div>
+
+<div class="container">
+  <!-- Вкладка: Файлы -->
+  <div class="tab-content active" id="files-tab">
+    <h2>Список отслеживания</h2>
+    <br>
+    <div class="file-list">
+      <div class="file-item">
+        <div class="file-info">
+          <div class="file-name">cat.jpg</div>
+          <div class="file-path">/home/ivanov/cat.jpg</div>
+        </div>
+          <div class="file-controls">
+            <!-- Только для пользователя уровня 1 или админа -->
+            <div class="status-badge unchanged">НЕ ИЗМЕНЁН</div>
+            <button class="menu-btn">⋮</button>
+
+            <!-- Выпадающее меню (изначально скрыто) -->
+            <div class="dropdown-menu">
+              <button class="dropdown-item" onclick="editFile()">Изменить</button>
+              <button class="dropdown-item" onclick="deleteFile()">Удалить</button>
+            </div>
+          </div>
+      </div>
+      <div class="file-item">
+        <div class="file-info">
+          <div class="file-name">report.pdf</div>
+          <div class="file-path">/opt/data/report.pdf</div>
+        </div>
+          <div class="file-controls">
+            <!-- Только для пользователя уровня 1 или админа -->
+            <!-- или <div class="status-badge unchanged">НЕ ИЗМЕНЁН</div> -->
+            <div class="status-badge changed">ИЗМЕНЁН</div>
+            <button class="menu-btn">⋮</button>
+
+            <!-- Выпадающее меню (изначально скрыто) -->
+            <div class="dropdown-menu">
+              <button class="dropdown-item" onclick="editFile()">Изменить</button>
+              <button class="dropdown-item" onclick="deleteFile()">Удалить</button>
+            </div>
+          </div>
+      </div>
+      <div class="file-item">
+        <div class="file-info">
+          <div class="file-name">config.ini</div>
+          <div class="file-path">/etc/app/config.ini</div>
+        </div>
+          <div class="file-controls">
+            <!-- Только для пользователя уровня 1 или админа -->
+            <!-- или <div class="status-badge unchanged">НЕ ИЗМЕНЁН</div> -->
+            <div class="status-badge changed">ИЗМЕНЁН</div>
+            <button class="menu-btn">⋮</button>
+
+            <!-- Выпадающее меню (изначально скрыто) -->
+            <div class="dropdown-menu">
+              <button class="dropdown-item" onclick="editFile()">Изменить</button>
+              <button class="dropdown-item" onclick="deleteFile()">Удалить</button>
+            </div>
+          </div>
+      </div>
+    </div>
+    <button class="add-file-btn" onclick="openAddFileModal()">+ Добавить файл(ы)</button>
+  </div>
+
+  <!-- Вкладка: Статистика -->
+  <div class="tab-content" id="stats-tab">
+    <div class="stat-controls">
+      <label>
+        С:
+        <input type="date" id="date-from" value="2025-11-10">
+      </label>
+      <label>
+        По:
+        <input type="date" id="date-to" value="2025-11-20">
+      </label>
+      <button onclick="updateChart()">Применить</button>
+    </div>
+    <canvas id="statsChart"></canvas>
+  </div>
+</div>
+
+<!-- Кнопка "Создать отчёт" -->
+<button class="report-btn" onclick="openReportModal()">Создать отчёт</button>
+
+<!-- Модальное окно отчёта -->
+<div class="modal" id="reportModal">
+  <div class="modal-content">
+    <h3>Создание отчёта</h3>
+    <div class="form-group">
+      <label>Период</label>
+      <div style="display:flex;gap:10px;">
+        <input type="date" id="rep-from">
+        <span>–</span>
+        <input type="date" id="rep-to">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>
+        <input type="checkbox" id="select-all" onchange="toggleAllFiles()"> Выбрать все файлы
+      </label>
+      <div class="file-list-check" id="file-check-list">
+        <label><input type="checkbox" value="1"> cat.jpg</label><br>
+        <label><input type="checkbox" value="2"> report.pdf</label><br>
+        <label><input type="checkbox" value="3"> config.ini</label>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Формат отчёта</label>
+      <div class="format-group">
+        <label><input type="radio" name="format" value="csv" checked> CSV</label>
+        <label><input type="radio" name="format" value="html"> HTML</label>
+        <label><input type="radio" name="format" value="txt"> TXT</label>
+      </div>
+    </div>
+    <div>
+      <button class="close-btn" onclick="closeReportModal()">Отмена</button>
+      <button class="submit-btn" onclick="generateReport()">Сформировать</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модальное окно выбора файла -->
+<div class="modal" id="addFileModal">
+  <div class="modal-content">
+    <h3>Добавление файла (папки) для отслеживания</h3>
+    <div class="form-group">
+      <label>Метод контроля целостности</label>
+      <div class="format-group">
+        <label><input type="radio" name="format" value="md5" checked> MD5</label>
+        <label><input type="radio" name="format" value="sha1"> SHA-1</label>
+        <label><input type="radio" name="format" value="sha256"> SHA-256</label>
+      </div>
+    </div>
+    <div>
+      <button class="close-btn" onclick="closeAddFileModal()">Отмена</button>
+      <button class="submit-btn" onclick="selectFile()">Выбрать файл</button>
+      <button class="submit-btn" onclick="selectDirectory()">Выбрать папку</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Переключение видимости меню
+  document.querySelectorAll('.menu-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const menu = this.nextElementSibling.nextElementSibling; // dropdown-menu
+      document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+      menu.classList.toggle('show');
+    });
+  });
+
+  // Закрывать меню при клике вне его
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+  });
+  // Переключение вкладок
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab + '-tab').classList.add('active');
+    });
+  });
+
+  // График статистики
+  const ctx = document.getElementById('statsChart').getContext('2d');
+  const chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['10.11', '11.11', '12.11', '13.11', '14.11', '15.11', '16.11', '17.11', '18.11', '19.11', '20.11'],
+      datasets: [{
+        label: 'Изменённые файлы',
+        data: [2, 0, 1, 3, 0, 0, 1, 2, 0, 1, 0],
+        backgroundColor: '#007bff'
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 1 } }
+      }
+    }
+  });
+
+  function updateChart() {
+    // Здесь можно обновлять данные через API
+    alert('Демо: график обновлён (в реальности — запрос к бэкенду)');
+  }
+
+  function showProfileInfo() {
+    const menu = document.getElementById('profileInfoMenu');
+
+    const isVisible = menu.style.display === 'flex';
+
+    // Закрываем все другие dropdown-меню
+    document.querySelectorAll('.dropdown-menu:not(#profileInfoMenu)').forEach(m => {
+        m.classList.remove('show');
+    });
+
+    // Переключаем меню профиля
+    menu.style.display = isVisible ? 'none' : 'flex';
+  }
+
+  function closeProfileInfo() {
+    document.getElementById('profileInfoMenu').style.display = 'none';
+  }
+
+  // Переключение видимости меню
+  document.querySelectorAll('.myprofile-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const menu = this.nextElementSibling;
+      document.querySelectorAll('.profile-info-menu').forEach(m => m.classList.remove('show'));
+      menu.classList.toggle('show');
+    });
+  });
+
+  // Закрывать меню при клике вне его
+    document.addEventListener('click', () => {
+    document.querySelectorAll('.profile-info-menu').forEach(m => m.classList.remove('show'));
+  });
+
+  // Остановка всплытия для меню профиля
+  document.getElementById('profileInfoMenu').addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+
+  // Модальное окно отчёта
+  function openReportModal() {
+    document.getElementById('reportModal').style.display = 'flex';
+  }
+
+  function closeReportModal() {
+    document.getElementById('reportModal').style.display = 'none';
+  }
+
+  // Модальное окно выбора файлов
+  function openAddFileModal() {
+    document.getElementById('addFileModal').style.display = 'flex';
+  }
+
+  function closeAddFileModal() {
+    document.getElementById('addFileModal').style.display = 'none';
+  }
+
+  function selectFile() {
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.click();
+  }
+
+  function selectDirectory() {
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.webkitdirectory = true;
+    input.click();
+  }
+
+  function toggleAllFiles() {
+    const checked = document.getElementById('select-all').checked;
+    document.querySelectorAll('#file-check-list input').forEach(cb => cb.checked = checked);
+  }
+
+  function generateReport() {
+    const format = document.querySelector('input[name="format"]:checked').value;
+    const files = Array.from(document.querySelectorAll('#file-check-list input:checked')).map(cb => cb.value);
+    if (files.length === 0) {
+      alert('Выберите хотя бы один файл');
+      return;
+    }
+    alert(`Отчёт (${format}) сформирован для ${files.length} файлов`);
+    closeReportModal();
+  }
+
+  // Закрытие модалки по клику вне
+  window.onclick = (e) => {
+    if (e.target === document.getElementById('reportModal')) closeReportModal();
+  };
+
+  // Переключение видимости меню
+  document.querySelectorAll('.menu-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const menu = this.nextElementSibling; // dropdown-menu
+      document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+      menu.classList.toggle('show');
+    });
+  });
+
+  // Закрывать меню при клике вне его
+    document.addEventListener('click', () => {
+    document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+  });
+
+  // Функции действий
+  function editFile() {
+    alert('Редактирование — заглушка');
+    // Здесь будет вызов API / открытие формы
+  }
+
+  function deleteFile() {
+    if (confirm('Удалить файл из отслеживания?')) {
+      alert('Удалено — заглушка');
+      // Здесь — DELETE-запрос к бэкенду
+    }
+  }
+</script>
+
+</body>
+</html>

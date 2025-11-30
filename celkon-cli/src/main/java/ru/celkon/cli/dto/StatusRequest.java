@@ -1,13 +1,13 @@
 package ru.celkon.cli.dto;
 
-public class DeleteFileRequest {
+public class StatusRequest {
 
     private String token;
     private int file_id;
 
-    public DeleteFileRequest() {}
+    public StatusRequest() {}
 
-    public DeleteFileRequest(String token, int file_id) {
+    public StatusRequest(String token, int file_id) {
         this.token = token;
         this.file_id = file_id;
     }

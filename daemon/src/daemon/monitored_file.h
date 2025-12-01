@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 struct Monitored_file {
     int file_id;

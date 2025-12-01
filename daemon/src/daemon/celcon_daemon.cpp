@@ -1,0 +1,118 @@
+#include "celcon_daemon.h"
+#include "communication_module.h"
+#include "file_watcher.h"
+#include "integrity_checker.h"
+#include <unistd.h>
+#include <syslog.h>
+#include <signal.h>
+#include <cstdlib>
+#include <fcntl.h>
+#include <sys/select.h>
+#include <sys/stat.h>
+#include <vector>
+#include <algorithm>
+
+#include <iostream>
+
+Celcon_daemon::Celcon_daemon()
+    :
+      hasher_(std::make_unique<IntegrityChecker>()),
+      watcher_(std::make_unique<File_watcher>(hasher_.get())),
+      db_(std::make_unique<Database>()),
+      user_dao_(std::make_unique<UserDAO>(db_->get_handle())),
+      file_dao_(std::make_unique<MonitoredFileDAO>(db_->get_handle())),
+      history_dao_(std::make_unique<ChangeHistoryDAO>(db_->get_handle())),
+      comm_(std::make_unique<CommunicationModule>(
+          *db_.get(),
+          hasher_.get(),
+          user_dao_.get(),
+          file_dao_.get(),
+          *watcher_
+      ))
+{
+
+    // Передай hasher в watcher, если нужно
+    watcher_->set_hasher(hasher_.get());
+}
+
+Celcon_daemon::~Celcon_daemon() = default;
+
+void Celcon_daemon::daemonize() {
+    pid_t pid = fork();
+    if (pid < 0) {
+        syslog(LOG_ERR, "fork() failed");
+        exit(EXIT_FAILURE);
+    }
+    if (pid > 0) {
+        std::cout << "Celcon daemon started at PID = " << pid << std::endl;
+        exit(EXIT_SUCCESS);
+    }
+
+    if (setsid() < 0) {
+        syslog(LOG_ERR, "setsid() failed");
+        exit(EXIT_FAILURE);
+    }
+
+    chdir("/");
+    umask(0);
+
+    close(STDIN_FILENO);
+    close(STDOUT_FILENO);
+    close(STDERR_FILENO);
+
+    // Игнорировать SIGCHLD, чтобы не было зомби
+    struct sigaction sa {};
+    sa.sa_handler = SIG_IGN;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = SA_RESTART;
+    sigaction(SIGCHLD, &sa, nullptr);
+
+    openlog("Celcon_daemon", LOG_PID, LOG_DAEMON);
+    mainloop();
+    closelog();
+}
+
+void Celcon_daemon::mainloop() {
+    try {
+        // Загружаем список файлов из БД
+        auto monitored_files = db_->load_monitored_files();
+        watcher_->setFiles(monitored_files);
+
+        // Запускаем сетевой модуль
+        comm_->start();
+
+        // Получаем дескрипторы
+        int socket_fd = comm_->get_socket_fd();
+        int inotify_fd = watcher_->get_inotify_fd();
+
+        fd_set readfds;
+        int max_fd = std::max(socket_fd, inotify_fd) + 1;
+
+        while (true) {
+            FD_ZERO(&readfds);
+            FD_SET(socket_fd, &readfds);
+            FD_SET(inotify_fd, &readfds);
+
+            int activity = select(max_fd, &readfds, nullptr, nullptr, nullptr);
+            if (activity < 0) {
+                if (errno == EINTR) continue; // прерван сигналом
+                syslog(LOG_ERR, "select() error: %m");
+                break;
+            }
+
+            if (FD_ISSET(socket_fd, &readfds)) {
+                comm_->handle_incoming();
+            }
+
+            if (FD_ISSET(inotify_fd, &readfds)) {
+                watcher_->process_inotify_events();
+            }
+        }
+    } catch (const std::exception& e) {
+        syslog(LOG_CRIT, "Fatal error in mainloop: %s", e.what());
+    }
+}
+
+void Celcon_daemon::exec() {
+    daemonize();
+}

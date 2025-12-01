@@ -1,0 +1,59 @@
+#pragma once
+#include "monitored_file.h"
+#include "auth_manager.h"
+#include "file_watcher.h"
+#include "integrity_checker.h"
+#include "../database/user_dao.h"
+#include "../database/monitored_file_dao.h"
+#include <string>
+#include <memory>
+#include <vector>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
+
+class Database;
+class AuthManager;
+
+class CommunicationModule {
+private:
+    int server_fd_ = -1;
+    SSL_CTX* ctx_ = nullptr;
+    SSL* ssl_ = nullptr;
+    bool client_connected_ = false;
+
+    Database& db_;
+    AuthManager auth_manager_;
+    File_watcher& watcher_;
+    IntegrityChecker* hasher_;
+    UserDAO* user_dao_;
+    MonitoredFileDAO* file_dao_;
+
+    void init_tls();
+    void handle_command(const std::string& json_str);
+    void send_json(const nlohmann::json& response);
+    nlohmann::json process_auth(const nlohmann::json& req);
+    nlohmann::json process_sync(const nlohmann::json& req);
+    nlohmann::json process_add_files(const nlohmann::json& req);
+    nlohmann::json process_add_user(const nlohmann::json& req);
+    // ... другие команды
+
+public:
+    explicit CommunicationModule(
+        Database &db,
+        IntegrityChecker* hasher,
+        UserDAO* user_dao,
+        MonitoredFileDAO* file_dao,
+        File_watcher& watcher
+    );
+
+    ~CommunicationModule() = default;
+
+    void start(); // запускает серверный сокет и TLS
+    void handle_incoming(); // вызывается из mainloop
+    int get_socket_fd() const { return server_fd_; }
+
+    // Для отправки событий извне (например, при изменении файла)
+    void notify_file_changed(int file_id, const std::string& path, const std::string& new_hash);
+};

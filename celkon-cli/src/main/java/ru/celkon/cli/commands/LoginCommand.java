@@ -21,12 +21,12 @@ public class LoginCommand {
         String password = input.readLine("Password: ");
 
         LoginRequest req = new LoginRequest(username, password);
-        Envelope<LoginRequest> env = new Envelope<>("login", req);
+        Envelope<LoginRequest> env = new Envelope<>("AUTH", req);
 
         LoginResponse resp = client.send(env, LoginResponse.class);
 
         if (resp != null)
-            System.out.println("Response: " + resp.getStatus());
+            System.out.println("Response: " + resp.getMessage());
 
         return resp;
     }

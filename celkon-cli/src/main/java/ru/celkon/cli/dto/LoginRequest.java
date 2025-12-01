@@ -2,29 +2,29 @@ package ru.celkon.cli.dto;
 
 public class LoginRequest {
 
-    private String username;
-    private String password;
+    private String login;
+    private String token;
 
     public LoginRequest() {}
 
     public LoginRequest(String username, String password) {
-        this.username = username;
-        this.password = password;
+        this.login = username;
+        this.token = password;
     }
 
-    public String getUsername() {
-        return username;
+    public String getLogin() {
+        return login;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setLogin(String login) {
+        this.login = login;
     }
 
-    public String getPassword() {
-        return password;
+    public String getToken() {
+        return token;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setToken(String token) {
+        this.token = token;
     }
 }

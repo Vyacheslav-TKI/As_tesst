@@ -1,8 +1,9 @@
 package ru.celkon.cli.client;
-
+/*
 import javax.net.ssl.SSLSocket;
 import java.io.*;
 
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import ru.celkon.cli.dto.Envelope;
 
 public class CelkonClient {
@@ -10,7 +11,7 @@ public class CelkonClient {
     private final TLSConnectionFactory tlsFactory = new TLSConnectionFactory();
 
     private final String host = "127.0.0.1";
-    private final int port = 5555;   // порт демона — поменяй если другой
+    private final int port = 999;   // порт демона — поменяй если другой
 
 
     public <T> T send(Envelope<?> request, Class<T> responseClass) {
@@ -43,3 +44,4 @@ public class CelkonClient {
         }
     }
 }
+*/

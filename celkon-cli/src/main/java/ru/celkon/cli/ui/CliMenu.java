@@ -42,16 +42,16 @@ public class CliMenu {
         LoginCommand login = new LoginCommand(client, input);
         LoginResponse resp = login.execute();
 
-        if (resp == null || !"ok".equals(resp.getStatus())) {
+        if (resp == null || !"ok".equals(resp.getMessage())) {
             System.out.println("Login failed: " +
                     (resp != null ? resp.getMessage() : "no response"));
             return;
         }
 
         token = resp.getToken();
-        role = resp.getRole();
 
         System.out.println("Logged in successfully.");
+        mainMenu();
     }
 
     // ---------------- MAIN MENU ----------------
@@ -74,24 +74,15 @@ public class CliMenu {
             case 2 -> statusFile();
 
             case 3 -> {
-                if (role == 1)
-                    addFile();
-                else
-                    System.out.println("Access denied: admin only.");
+                addFile();
             }
 
             case 4 -> {
-                if (role == 1)
-                    updateFile();
-                else
-                    System.out.println("Access denied: admin only.");
+                updateFile();
             }
 
             case 5 -> {
-                if (role == 1)
-                    deleteFile();
-                else
-                    System.out.println("Access denied: admin only.");
+                deleteFile();
             }
 
             case 9 -> logout();

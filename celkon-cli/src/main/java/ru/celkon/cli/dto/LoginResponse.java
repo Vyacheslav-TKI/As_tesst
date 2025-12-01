@@ -1,43 +1,38 @@
 package ru.celkon.cli.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class LoginResponse {
 
-    private String status;   // "ok" / "error"
+    private int code;
+    @JsonProperty("session_id")
+    private String sessionId;
+    @JsonProperty("answ")
     private String message;  // for error messages
-    private String token;    // auth token
-    private int role;        // 0=user, 1=admin
 
     public LoginResponse() {}
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
     public String getToken() {
-        return token;
+        return sessionId;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public int getCode() {
+        return code;
     }
 
-    public int getRole() {
-        return role;
+    public void setCode(int code) {
+        this.code = code;
     }
 
-    public void setRole(int role) {
-        this.role = role;
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 }

@@ -1,8 +1,11 @@
 package ru.celkon.cli.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class AddFileResponse {
 
     private String status;
+    @JsonProperty("answ")
     private String message;
     private int file_id;
 

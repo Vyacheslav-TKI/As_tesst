@@ -20,7 +20,7 @@ public class AddFileCommand {
         int alg = Integer.parseInt(input.readLine("Algorithm (0..4): "));
 
         AddFileRequest req = new AddFileRequest(token, path, alg);
-        Envelope<AddFileRequest> env = new Envelope<>("add_file", req);
+        Envelope<AddFileRequest> env = new Envelope<>("ADD_FILES", req);
 
         AddFileResponse resp = client.send(env, AddFileResponse.class);
 

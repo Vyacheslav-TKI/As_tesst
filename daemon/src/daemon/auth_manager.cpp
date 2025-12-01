@@ -2,6 +2,7 @@
 #include <random>
 #include <sstream>
 #include <iomanip>
+#include <syslog.h>
 #include <openssl/sha.h>
 #include "utils.h"
 

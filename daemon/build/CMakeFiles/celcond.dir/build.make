@@ -73,169 +73,169 @@ CMakeFiles/celcond.dir/src/main.cpp.o: CMakeFiles/celcond.dir/flags.make
 CMakeFiles/celcond.dir/src/main.cpp.o: /home/user/Загрузки/celcon/As_tesst/daemon/src/main.cpp
 CMakeFiles/celcond.dir/src/main.cpp.o: CMakeFiles/celcond.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Загрузки/celcon/As_tesst/daemon/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/celcond.dir/src/main.cpp.o"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/main.cpp.o -MF CMakeFiles/celcond.dir/src/main.cpp.o.d -o CMakeFiles/celcond.dir/src/main.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/main.cpp
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/main.cpp.o -MF CMakeFiles/celcond.dir/src/main.cpp.o.d -o CMakeFiles/celcond.dir/src/main.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/main.cpp
 
 CMakeFiles/celcond.dir/src/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/celcond.dir/src/main.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/main.cpp > CMakeFiles/celcond.dir/src/main.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/main.cpp > CMakeFiles/celcond.dir/src/main.cpp.i
 
 CMakeFiles/celcond.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/celcond.dir/src/main.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/main.cpp -o CMakeFiles/celcond.dir/src/main.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/main.cpp -o CMakeFiles/celcond.dir/src/main.cpp.s
 
 CMakeFiles/celcond.dir/src/daemon/celcon_daemon.cpp.o: CMakeFiles/celcond.dir/flags.make
 CMakeFiles/celcond.dir/src/daemon/celcon_daemon.cpp.o: /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/celcon_daemon.cpp
 CMakeFiles/celcond.dir/src/daemon/celcon_daemon.cpp.o: CMakeFiles/celcond.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Загрузки/celcon/As_tesst/daemon/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/celcond.dir/src/daemon/celcon_daemon.cpp.o"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/daemon/celcon_daemon.cpp.o -MF CMakeFiles/celcond.dir/src/daemon/celcon_daemon.cpp.o.d -o CMakeFiles/celcond.dir/src/daemon/celcon_daemon.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/celcon_daemon.cpp
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/daemon/celcon_daemon.cpp.o -MF CMakeFiles/celcond.dir/src/daemon/celcon_daemon.cpp.o.d -o CMakeFiles/celcond.dir/src/daemon/celcon_daemon.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/celcon_daemon.cpp
 
 CMakeFiles/celcond.dir/src/daemon/celcon_daemon.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/celcond.dir/src/daemon/celcon_daemon.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/celcon_daemon.cpp > CMakeFiles/celcond.dir/src/daemon/celcon_daemon.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/celcon_daemon.cpp > CMakeFiles/celcond.dir/src/daemon/celcon_daemon.cpp.i
 
 CMakeFiles/celcond.dir/src/daemon/celcon_daemon.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/celcond.dir/src/daemon/celcon_daemon.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/celcon_daemon.cpp -o CMakeFiles/celcond.dir/src/daemon/celcon_daemon.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/celcon_daemon.cpp -o CMakeFiles/celcond.dir/src/daemon/celcon_daemon.cpp.s
 
 CMakeFiles/celcond.dir/src/daemon/communication_module.cpp.o: CMakeFiles/celcond.dir/flags.make
 CMakeFiles/celcond.dir/src/daemon/communication_module.cpp.o: /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/communication_module.cpp
 CMakeFiles/celcond.dir/src/daemon/communication_module.cpp.o: CMakeFiles/celcond.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Загрузки/celcon/As_tesst/daemon/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/celcond.dir/src/daemon/communication_module.cpp.o"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/daemon/communication_module.cpp.o -MF CMakeFiles/celcond.dir/src/daemon/communication_module.cpp.o.d -o CMakeFiles/celcond.dir/src/daemon/communication_module.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/communication_module.cpp
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/daemon/communication_module.cpp.o -MF CMakeFiles/celcond.dir/src/daemon/communication_module.cpp.o.d -o CMakeFiles/celcond.dir/src/daemon/communication_module.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/communication_module.cpp
 
 CMakeFiles/celcond.dir/src/daemon/communication_module.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/celcond.dir/src/daemon/communication_module.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/communication_module.cpp > CMakeFiles/celcond.dir/src/daemon/communication_module.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/communication_module.cpp > CMakeFiles/celcond.dir/src/daemon/communication_module.cpp.i
 
 CMakeFiles/celcond.dir/src/daemon/communication_module.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/celcond.dir/src/daemon/communication_module.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/communication_module.cpp -o CMakeFiles/celcond.dir/src/daemon/communication_module.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/communication_module.cpp -o CMakeFiles/celcond.dir/src/daemon/communication_module.cpp.s
 
 CMakeFiles/celcond.dir/src/daemon/file_watcher.cpp.o: CMakeFiles/celcond.dir/flags.make
 CMakeFiles/celcond.dir/src/daemon/file_watcher.cpp.o: /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/file_watcher.cpp
 CMakeFiles/celcond.dir/src/daemon/file_watcher.cpp.o: CMakeFiles/celcond.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Загрузки/celcon/As_tesst/daemon/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/celcond.dir/src/daemon/file_watcher.cpp.o"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/daemon/file_watcher.cpp.o -MF CMakeFiles/celcond.dir/src/daemon/file_watcher.cpp.o.d -o CMakeFiles/celcond.dir/src/daemon/file_watcher.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/file_watcher.cpp
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/daemon/file_watcher.cpp.o -MF CMakeFiles/celcond.dir/src/daemon/file_watcher.cpp.o.d -o CMakeFiles/celcond.dir/src/daemon/file_watcher.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/file_watcher.cpp
 
 CMakeFiles/celcond.dir/src/daemon/file_watcher.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/celcond.dir/src/daemon/file_watcher.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/file_watcher.cpp > CMakeFiles/celcond.dir/src/daemon/file_watcher.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/file_watcher.cpp > CMakeFiles/celcond.dir/src/daemon/file_watcher.cpp.i
 
 CMakeFiles/celcond.dir/src/daemon/file_watcher.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/celcond.dir/src/daemon/file_watcher.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/file_watcher.cpp -o CMakeFiles/celcond.dir/src/daemon/file_watcher.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/file_watcher.cpp -o CMakeFiles/celcond.dir/src/daemon/file_watcher.cpp.s
 
 CMakeFiles/celcond.dir/src/daemon/integrity_checker.cpp.o: CMakeFiles/celcond.dir/flags.make
 CMakeFiles/celcond.dir/src/daemon/integrity_checker.cpp.o: /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/integrity_checker.cpp
 CMakeFiles/celcond.dir/src/daemon/integrity_checker.cpp.o: CMakeFiles/celcond.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Загрузки/celcon/As_tesst/daemon/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/celcond.dir/src/daemon/integrity_checker.cpp.o"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/daemon/integrity_checker.cpp.o -MF CMakeFiles/celcond.dir/src/daemon/integrity_checker.cpp.o.d -o CMakeFiles/celcond.dir/src/daemon/integrity_checker.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/integrity_checker.cpp
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/daemon/integrity_checker.cpp.o -MF CMakeFiles/celcond.dir/src/daemon/integrity_checker.cpp.o.d -o CMakeFiles/celcond.dir/src/daemon/integrity_checker.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/integrity_checker.cpp
 
 CMakeFiles/celcond.dir/src/daemon/integrity_checker.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/celcond.dir/src/daemon/integrity_checker.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/integrity_checker.cpp > CMakeFiles/celcond.dir/src/daemon/integrity_checker.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/integrity_checker.cpp > CMakeFiles/celcond.dir/src/daemon/integrity_checker.cpp.i
 
 CMakeFiles/celcond.dir/src/daemon/integrity_checker.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/celcond.dir/src/daemon/integrity_checker.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/integrity_checker.cpp -o CMakeFiles/celcond.dir/src/daemon/integrity_checker.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/integrity_checker.cpp -o CMakeFiles/celcond.dir/src/daemon/integrity_checker.cpp.s
 
 CMakeFiles/celcond.dir/src/daemon/json_protocol.cpp.o: CMakeFiles/celcond.dir/flags.make
 CMakeFiles/celcond.dir/src/daemon/json_protocol.cpp.o: /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/json_protocol.cpp
 CMakeFiles/celcond.dir/src/daemon/json_protocol.cpp.o: CMakeFiles/celcond.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Загрузки/celcon/As_tesst/daemon/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/celcond.dir/src/daemon/json_protocol.cpp.o"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/daemon/json_protocol.cpp.o -MF CMakeFiles/celcond.dir/src/daemon/json_protocol.cpp.o.d -o CMakeFiles/celcond.dir/src/daemon/json_protocol.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/json_protocol.cpp
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/daemon/json_protocol.cpp.o -MF CMakeFiles/celcond.dir/src/daemon/json_protocol.cpp.o.d -o CMakeFiles/celcond.dir/src/daemon/json_protocol.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/json_protocol.cpp
 
 CMakeFiles/celcond.dir/src/daemon/json_protocol.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/celcond.dir/src/daemon/json_protocol.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/json_protocol.cpp > CMakeFiles/celcond.dir/src/daemon/json_protocol.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/json_protocol.cpp > CMakeFiles/celcond.dir/src/daemon/json_protocol.cpp.i
 
 CMakeFiles/celcond.dir/src/daemon/json_protocol.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/celcond.dir/src/daemon/json_protocol.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/json_protocol.cpp -o CMakeFiles/celcond.dir/src/daemon/json_protocol.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/json_protocol.cpp -o CMakeFiles/celcond.dir/src/daemon/json_protocol.cpp.s
 
 CMakeFiles/celcond.dir/src/daemon/auth_manager.cpp.o: CMakeFiles/celcond.dir/flags.make
 CMakeFiles/celcond.dir/src/daemon/auth_manager.cpp.o: /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/auth_manager.cpp
 CMakeFiles/celcond.dir/src/daemon/auth_manager.cpp.o: CMakeFiles/celcond.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Загрузки/celcon/As_tesst/daemon/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/celcond.dir/src/daemon/auth_manager.cpp.o"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/daemon/auth_manager.cpp.o -MF CMakeFiles/celcond.dir/src/daemon/auth_manager.cpp.o.d -o CMakeFiles/celcond.dir/src/daemon/auth_manager.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/auth_manager.cpp
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/daemon/auth_manager.cpp.o -MF CMakeFiles/celcond.dir/src/daemon/auth_manager.cpp.o.d -o CMakeFiles/celcond.dir/src/daemon/auth_manager.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/auth_manager.cpp
 
 CMakeFiles/celcond.dir/src/daemon/auth_manager.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/celcond.dir/src/daemon/auth_manager.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/auth_manager.cpp > CMakeFiles/celcond.dir/src/daemon/auth_manager.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/auth_manager.cpp > CMakeFiles/celcond.dir/src/daemon/auth_manager.cpp.i
 
 CMakeFiles/celcond.dir/src/daemon/auth_manager.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/celcond.dir/src/daemon/auth_manager.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/auth_manager.cpp -o CMakeFiles/celcond.dir/src/daemon/auth_manager.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/auth_manager.cpp -o CMakeFiles/celcond.dir/src/daemon/auth_manager.cpp.s
 
 CMakeFiles/celcond.dir/src/daemon/utils.cpp.o: CMakeFiles/celcond.dir/flags.make
 CMakeFiles/celcond.dir/src/daemon/utils.cpp.o: /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/utils.cpp
 CMakeFiles/celcond.dir/src/daemon/utils.cpp.o: CMakeFiles/celcond.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Загрузки/celcon/As_tesst/daemon/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/celcond.dir/src/daemon/utils.cpp.o"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/daemon/utils.cpp.o -MF CMakeFiles/celcond.dir/src/daemon/utils.cpp.o.d -o CMakeFiles/celcond.dir/src/daemon/utils.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/utils.cpp
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/daemon/utils.cpp.o -MF CMakeFiles/celcond.dir/src/daemon/utils.cpp.o.d -o CMakeFiles/celcond.dir/src/daemon/utils.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/utils.cpp
 
 CMakeFiles/celcond.dir/src/daemon/utils.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/celcond.dir/src/daemon/utils.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/utils.cpp > CMakeFiles/celcond.dir/src/daemon/utils.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/utils.cpp > CMakeFiles/celcond.dir/src/daemon/utils.cpp.i
 
 CMakeFiles/celcond.dir/src/daemon/utils.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/celcond.dir/src/daemon/utils.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/utils.cpp -o CMakeFiles/celcond.dir/src/daemon/utils.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/utils.cpp -o CMakeFiles/celcond.dir/src/daemon/utils.cpp.s
 
 CMakeFiles/celcond.dir/src/database/database.cpp.o: CMakeFiles/celcond.dir/flags.make
 CMakeFiles/celcond.dir/src/database/database.cpp.o: /home/user/Загрузки/celcon/As_tesst/daemon/src/database/database.cpp
 CMakeFiles/celcond.dir/src/database/database.cpp.o: CMakeFiles/celcond.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Загрузки/celcon/As_tesst/daemon/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/celcond.dir/src/database/database.cpp.o"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/database/database.cpp.o -MF CMakeFiles/celcond.dir/src/database/database.cpp.o.d -o CMakeFiles/celcond.dir/src/database/database.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/database/database.cpp
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/database/database.cpp.o -MF CMakeFiles/celcond.dir/src/database/database.cpp.o.d -o CMakeFiles/celcond.dir/src/database/database.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/database/database.cpp
 
 CMakeFiles/celcond.dir/src/database/database.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/celcond.dir/src/database/database.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/database/database.cpp > CMakeFiles/celcond.dir/src/database/database.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/database/database.cpp > CMakeFiles/celcond.dir/src/database/database.cpp.i
 
 CMakeFiles/celcond.dir/src/database/database.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/celcond.dir/src/database/database.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/database/database.cpp -o CMakeFiles/celcond.dir/src/database/database.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/database/database.cpp -o CMakeFiles/celcond.dir/src/database/database.cpp.s
 
 CMakeFiles/celcond.dir/src/database/user_dao.cpp.o: CMakeFiles/celcond.dir/flags.make
 CMakeFiles/celcond.dir/src/database/user_dao.cpp.o: /home/user/Загрузки/celcon/As_tesst/daemon/src/database/user_dao.cpp
 CMakeFiles/celcond.dir/src/database/user_dao.cpp.o: CMakeFiles/celcond.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Загрузки/celcon/As_tesst/daemon/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/celcond.dir/src/database/user_dao.cpp.o"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/database/user_dao.cpp.o -MF CMakeFiles/celcond.dir/src/database/user_dao.cpp.o.d -o CMakeFiles/celcond.dir/src/database/user_dao.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/database/user_dao.cpp
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/database/user_dao.cpp.o -MF CMakeFiles/celcond.dir/src/database/user_dao.cpp.o.d -o CMakeFiles/celcond.dir/src/database/user_dao.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/database/user_dao.cpp
 
 CMakeFiles/celcond.dir/src/database/user_dao.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/celcond.dir/src/database/user_dao.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/database/user_dao.cpp > CMakeFiles/celcond.dir/src/database/user_dao.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/database/user_dao.cpp > CMakeFiles/celcond.dir/src/database/user_dao.cpp.i
 
 CMakeFiles/celcond.dir/src/database/user_dao.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/celcond.dir/src/database/user_dao.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/database/user_dao.cpp -o CMakeFiles/celcond.dir/src/database/user_dao.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/database/user_dao.cpp -o CMakeFiles/celcond.dir/src/database/user_dao.cpp.s
 
 CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.o: CMakeFiles/celcond.dir/flags.make
 CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.o: /home/user/Загрузки/celcon/As_tesst/daemon/src/database/monitored_file_dao.cpp
 CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.o: CMakeFiles/celcond.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Загрузки/celcon/As_tesst/daemon/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.o"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.o -MF CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.o.d -o CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/database/monitored_file_dao.cpp
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.o -MF CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.o.d -o CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/database/monitored_file_dao.cpp
 
 CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/database/monitored_file_dao.cpp > CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/database/monitored_file_dao.cpp > CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.i
 
 CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/database/monitored_file_dao.cpp -o CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/database/monitored_file_dao.cpp -o CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.s
 
 CMakeFiles/celcond.dir/src/database/change_history_dao.cpp.o: CMakeFiles/celcond.dir/flags.make
 CMakeFiles/celcond.dir/src/database/change_history_dao.cpp.o: /home/user/Загрузки/celcon/As_tesst/daemon/src/database/change_history_dao.cpp
 CMakeFiles/celcond.dir/src/database/change_history_dao.cpp.o: CMakeFiles/celcond.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/Загрузки/celcon/As_tesst/daemon/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/celcond.dir/src/database/change_history_dao.cpp.o"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/database/change_history_dao.cpp.o -MF CMakeFiles/celcond.dir/src/database/change_history_dao.cpp.o.d -o CMakeFiles/celcond.dir/src/database/change_history_dao.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/database/change_history_dao.cpp
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/celcond.dir/src/database/change_history_dao.cpp.o -MF CMakeFiles/celcond.dir/src/database/change_history_dao.cpp.o.d -o CMakeFiles/celcond.dir/src/database/change_history_dao.cpp.o -c /home/user/Загрузки/celcon/As_tesst/daemon/src/database/change_history_dao.cpp
 
 CMakeFiles/celcond.dir/src/database/change_history_dao.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/celcond.dir/src/database/change_history_dao.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/database/change_history_dao.cpp > CMakeFiles/celcond.dir/src/database/change_history_dao.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/Загрузки/celcon/As_tesst/daemon/src/database/change_history_dao.cpp > CMakeFiles/celcond.dir/src/database/change_history_dao.cpp.i
 
 CMakeFiles/celcond.dir/src/database/change_history_dao.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/celcond.dir/src/database/change_history_dao.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/database/change_history_dao.cpp -o CMakeFiles/celcond.dir/src/database/change_history_dao.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/Загрузки/celcon/As_tesst/daemon/src/database/change_history_dao.cpp -o CMakeFiles/celcond.dir/src/database/change_history_dao.cpp.s
 
 # Object files for target celcond
 celcond_OBJECTS = \

@@ -13,13 +13,18 @@ class Database;
 
 class Celcon_daemon {
 private:
-    std::unique_ptr<CommunicationModule> comm_;
-    std::unique_ptr<File_watcher> watcher_;
-    std::unique_ptr<IntegrityChecker> hasher_;
+    // Сначала идут зависимости (базовые сервисы)
     std::unique_ptr<Database> db_;
+    std::unique_ptr<IntegrityChecker> hasher_;
+
+    // Потом DAO
     std::unique_ptr<UserDAO> user_dao_;
     std::unique_ptr<MonitoredFileDAO> file_dao_;
     std::unique_ptr<ChangeHistoryDAO> history_dao_;
+
+    // Потом модули, зависящие от них
+    std::unique_ptr<File_watcher> watcher_;
+    std::unique_ptr<CommunicationModule> comm_;
 protected:
     void daemonize();
     void mainloop();

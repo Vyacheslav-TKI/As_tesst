@@ -11,7 +11,7 @@ private:
     sqlite3* db_;
 
 public:
-    explicit UserDAO(sqlite3* db) : db_(db) {}
+    explicit UserDAO(sqlite3* db);
 
     std::optional<User> get_by_login(const std::string& login);
     bool add_user(const User& user);
@@ -19,4 +19,6 @@ public:
     bool update_user(const User& user);
     bool delete_user(int user_id);
     bool login_exists(const std::string& login);
+    bool has_any_user();
+    bool add_default_admin();
 };

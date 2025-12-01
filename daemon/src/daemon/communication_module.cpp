@@ -8,6 +8,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <syslog.h>
 #include <cstring>
 
@@ -41,7 +42,6 @@ void CommunicationModule::init_tls() {
         exit(EXIT_FAILURE);
     }
 
-    // Загружаем сертификат и ключ (пути можно задать в конфиге)
     if (SSL_CTX_use_certificate_file(ctx_, "/etc/celcon/cert.pem", SSL_FILETYPE_PEM) <= 0) {
         ERR_print_errors_fp(stderr);
         exit(EXIT_FAILURE);
@@ -52,6 +52,15 @@ void CommunicationModule::init_tls() {
     }
 
     server_fd_ = socket(AF_INET, SOCK_STREAM, 0);
+    if (server_fd_ < 0) {
+        syslog(LOG_ERR, "socket failed");
+        exit(EXIT_FAILURE);
+    }
+
+    // Сделать серверный сокет non-blocking
+    int flags = fcntl(server_fd_, F_GETFL, 0);
+    fcntl(server_fd_, F_SETFL, flags | O_NONBLOCK);
+
     int enable = 1;
     setsockopt(server_fd_, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable));
 
@@ -64,7 +73,10 @@ void CommunicationModule::init_tls() {
         syslog(LOG_ERR, "bind failed");
         exit(EXIT_FAILURE);
     }
-    listen(server_fd_, 1);
+    if (listen(server_fd_, 1) < 0) {
+        syslog(LOG_ERR, "listen failed");
+        exit(EXIT_FAILURE);
+    }
 }
 
 void CommunicationModule::start() {
@@ -182,6 +194,7 @@ void CommunicationModule::handle_incoming() {
             close(client_fd);
             return;
         }
+        recv_buffer_.clear();
         client_connected_ = true;
         syslog(LOG_INFO, "Client connected via TLS");
     }
@@ -189,15 +202,23 @@ void CommunicationModule::handle_incoming() {
     char buffer[4096];
     int bytes = SSL_read(ssl_, buffer, sizeof(buffer) - 1);
     if (bytes <= 0) {
-        // Клиент отключился
-        SSL_shutdown(ssl_);
-        SSL_free(ssl_);
-        ssl_ = nullptr;
-        client_connected_ = false;
+        // ... обработка отключения
         return;
     }
-    buffer[bytes] = '\0';
-    handle_command(std::string(buffer));
+
+    // Добавляем прочитанные данные в внутренний буфер
+    recv_buffer_.append(buffer, bytes);
+
+    // Обрабатываем все полные строки (до \n)
+    size_t pos;
+    while ((pos = recv_buffer_.find('\n')) != std::string::npos) {
+        std::string line = recv_buffer_.substr(0, pos);
+        recv_buffer_.erase(0, pos + 1); // удаляем строку + \n
+
+        if (!line.empty()) {
+            handle_command(line);
+        }
+    }
 }
 
 void CommunicationModule::handle_command(const std::string& raw) {
@@ -259,5 +280,18 @@ json CommunicationModule::process_auth(const json& req) {
 void CommunicationModule::send_json(const json& j) {
     if (!client_connected_ || !ssl_) return;
     std::string s = j.dump() + "\n";
-    SSL_write(ssl_, s.c_str(), s.size());
+    int written = SSL_write(ssl_, s.c_str(), s.size());
+    if (written <= 0) {
+        int err = SSL_get_error(ssl_, written);
+        if (err == SSL_ERROR_WANT_WRITE || err == SSL_ERROR_WANT_READ) {
+            // Можно повторить позже (в non-blocking режиме)
+            syslog(LOG_WARNING, "SSL_write would block");
+        } else {
+            syslog(LOG_ERR, "SSL_write failed");
+            // Отключить клиента
+            client_connected_ = false;
+            SSL_free(ssl_);
+            ssl_ = nullptr;
+        }
+    }
 }

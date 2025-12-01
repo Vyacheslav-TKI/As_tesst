@@ -33,6 +33,16 @@ Celcon_daemon::Celcon_daemon()
 
     // Передай hasher в watcher, если нужно
     watcher_->set_hasher(hasher_.get());
+
+        // Автоматическое создание админа при первом запуске
+    if (!user_dao_->has_any_user()) {
+        if (!user_dao_->add_default_admin()) {
+            syslog(LOG_ERR, "Failed to create default admin user!");
+        } else {
+            syslog(LOG_INFO, "Default admin user created: login='admin', password='admin1234'");
+        }
+    }
+
 }
 
 Celcon_daemon::~Celcon_daemon() = default;
@@ -93,7 +103,8 @@ void Celcon_daemon::mainloop() {
             FD_SET(socket_fd, &readfds);
             FD_SET(inotify_fd, &readfds);
 
-            int activity = select(max_fd, &readfds, nullptr, nullptr, nullptr);
+            struct timeval timeout = {0, 100000}; // 100 мс
+            int activity = select(max_fd, &readfds, nullptr, nullptr, &timeout);
             if (activity < 0) {
                 if (errno == EINTR) continue; // прерван сигналом
                 syslog(LOG_ERR, "select() error: %m");

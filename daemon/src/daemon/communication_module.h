@@ -30,6 +30,8 @@ private:
     UserDAO* user_dao_;
     MonitoredFileDAO* file_dao_;
 
+    std::string recv_buffer_;
+
     void init_tls();
     void handle_command(const std::string& json_str);
     void send_json(const nlohmann::json& response);

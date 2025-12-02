@@ -1,0 +1,6 @@
+celkon:
+  host: 127.0.0.1
+  port: 9090
+  tls:
+    truststore: truststore.jks
+    password: password

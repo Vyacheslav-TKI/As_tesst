@@ -1,5 +1,7 @@
 #pragma once
 #include <memory>
+#include <vector>
+#include <string>
 #include "database/database.h"
 #include "database/user_dao.h"
 #include "database/monitored_file_dao.h"
@@ -25,6 +27,7 @@ private:
     // Потом модули, зависящие от них
     std::unique_ptr<File_watcher> watcher_;
     std::unique_ptr<CommunicationModule> comm_;
+
 protected:
     void daemonize();
     void mainloop();

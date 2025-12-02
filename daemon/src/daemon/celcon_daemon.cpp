@@ -84,34 +84,46 @@ void Celcon_daemon::daemonize() {
 
 void Celcon_daemon::mainloop() {
     try {
-        // Загружаем список файлов из БД
         auto monitored_files = db_->load_monitored_files();
         watcher_->setFiles(monitored_files);
-
-        // Запускаем сетевой модуль
         comm_->start();
 
-        // Получаем дескрипторы
-        int socket_fd = comm_->get_socket_fd();
         int inotify_fd = watcher_->get_inotify_fd();
 
-        fd_set readfds;
-        int max_fd = std::max(socket_fd, inotify_fd) + 1;
-
         while (true) {
+            // Ждём либо нового клиента (server_fd), либо данных от клиента (client_fd), либо inotify
+            fd_set readfds;
             FD_ZERO(&readfds);
-            FD_SET(socket_fd, &readfds);
+
+            int max_fd = inotify_fd + 1;
+
+            int server_fd = comm_->get_socket_fd();
+            FD_SET(server_fd, &readfds);
+            max_fd = std::max(max_fd, server_fd + 1);
+
+            int client_fd = comm_->get_client_fd();
+            if (client_fd >= 0) {
+                FD_SET(client_fd, &readfds);
+                max_fd = std::max(max_fd, client_fd + 1);
+            }
+
             FD_SET(inotify_fd, &readfds);
 
-            struct timeval timeout = {0, 100000}; // 100 мс
+            struct timeval timeout = {1, 0}; // 1 секунда
             int activity = select(max_fd, &readfds, nullptr, nullptr, &timeout);
             if (activity < 0) {
-                if (errno == EINTR) continue; // прерван сигналом
+                if (errno == EINTR) continue;
                 syslog(LOG_ERR, "select() error: %m");
                 break;
             }
 
-            if (FD_ISSET(socket_fd, &readfds)) {
+            if (FD_ISSET(server_fd, &readfds)) {
+                // Новое подключение
+                comm_->handle_incoming();
+            }
+
+            if (client_fd >= 0 && FD_ISSET(client_fd, &readfds)) {
+                // Данные от существующего клиента
                 comm_->handle_incoming();
             }
 

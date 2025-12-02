@@ -6,11 +6,7 @@
 #include "../database/database.h"
 #include "../database/entities.h"
 #include "../database/user_dao.h"
-
-struct Session {
-    User user; // вместо user_id + role
-    std::chrono::steady_clock::time_point last_activity;
-};
+#include "session.h"
 
 class AuthManager {
 private:

@@ -56,6 +56,8 @@ public:
     void handle_incoming(); // вызывается из mainloop
     int get_socket_fd() const { return server_fd_; }
 
+    int get_client_fd() const; // возвращает -1, если нет подключения
+
     // Для отправки событий извне (например, при изменении файла)
     void notify_file_changed(int file_id, const std::string& path, const std::string& new_hash);
 };

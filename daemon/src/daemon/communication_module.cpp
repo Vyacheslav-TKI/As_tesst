@@ -31,6 +31,11 @@ CommunicationModule::CommunicationModule(
     init_tls();
 }
 
+int CommunicationModule::get_client_fd() const {
+    if (!client_connected_ || !ssl_) return -1;
+    return SSL_get_fd(ssl_); // возвращает underlying file descriptor
+}
+
 void CommunicationModule::init_tls() {
     SSL_library_init();
     OpenSSL_add_ssl_algorithms();
@@ -245,17 +250,15 @@ void CommunicationModule::handle_command(const std::string& raw) {
                 }
             }
         }
-        else if (*cmd == "SYNC") {
-            auto req = JsonProtocol::parse_sync(j);
+        else if (*cmd == "ADD_FILES") {
+            auto req = JsonProtocol::parse_add_files(j);
             if (!req || !auth_manager_.validate_session(req->session_id)) {
                 response = JsonProtocol::make_error(401, "session invalid");
             } else {
-                auto files = db_.load_monitored_files();
-                response = JsonProtocol::make_sync_response(files);
+                auto files = req->files;
+                response = JsonProtocol::make_success();
             }
         }
-        // ... другие команды аналогично
-
         send_json(response);
     } catch (const std::exception& e) {
         syslog(LOG_ERR, "JSON error: %s", e.what());

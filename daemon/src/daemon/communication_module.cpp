@@ -90,6 +90,22 @@ void CommunicationModule::start() {
 
 // communication_module.cpp — обновлённые обработчики
 
+json CommunicationModule::process_auth(const json& req) {
+    std::string login = req.value("login", "");
+    std::string password = req.value("token", ""); // в ТЗ — token, но на самом деле пароль при входе
+    auto sid = auth_manager_.authenticate(login, password);
+    if (sid) {
+        return {{"code", 200}, {"session_id", *sid}, {"answ", "ok"}};
+    } else {
+        return {{"code", 401}, {"answ", "unauthorized"}};
+    }
+}
+
+json CommunicationModule::process_logout(const json& req) {
+    auth_manager_.logout(req.value("session_id", ""));
+    return {{"code", 200}, {"answ", "ok"}};
+}
+
 json CommunicationModule::process_add_files(const json& req) {
     auto parsed = JsonProtocol::parse_add_files(req);
     if (!parsed) {
@@ -158,7 +174,7 @@ json CommunicationModule::process_add_user(const json& req) {
     if (parsed->login.size() < 2 || !std::all_of(parsed->login.begin(), parsed->login.end(), ::isalpha)) {
         return JsonProtocol::make_error(400, "Введите корректный логин.");
     }
-    if (parsed->password.size() < 8) {
+    if (parsed->token.size() < 8) {
         return JsonProtocol::make_error(400, "Пароль должен содержать минимум 8 символов.");
     }
     if (parsed->level < 0 || parsed->level > 2) {
@@ -170,14 +186,14 @@ json CommunicationModule::process_add_user(const json& req) {
     }
 
     // Хешируем пароль (пример — SHA256, но лучше bcrypt)
-    std::string hashed = hash_password(parsed->password); // реализуй отдельно
+    std::string hashed = hash_password(parsed->token); // реализуй отдельно
 
     User new_user{
         .login = parsed->login,
         .password_hash = hashed,
         .role = parsed->level,
-        .fio = "N/A",         // можно запросить, но в ТЗ не обязательны при ADD_USER
-        .post = "N/A"
+        .fio = parsed->fio,         // можно запросить, но в ТЗ не обязательны при ADD_USER
+        .post = parsed->post
     };
 
     if (!user_dao_->add_user(new_user)) {
@@ -238,42 +254,23 @@ void CommunicationModule::handle_command(const std::string& raw) {
         json response;
 
         if (*cmd == "AUTH") {
-            auto req = JsonProtocol::parse_auth(j);
-            if (!req) {
-                response = JsonProtocol::make_error(400, "invalid auth request");
-            } else {
-                auto sid = auth_manager_.authenticate(req->login, req->token);
-                if (sid) {
-                    response = JsonProtocol::make_auth_success(*sid);
-                } else {
-                    response = JsonProtocol::make_error(401, "unauthorized");
-                }
-            }
+           send_json(process_auth(j));
         }
         else if (*cmd == "ADD_FILES") {
-            auto req = JsonProtocol::parse_add_files(j);
-            if (!req || !auth_manager_.validate_session(req->session_id)) {
-                response = JsonProtocol::make_error(401, "session invalid");
-            } else {
-                auto files = req->files;
-                response = JsonProtocol::make_success();
-            }
+            send_json(process_add_files(j));
         }
-        send_json(response);
+        else if (*cmd == "ADD_USER") {
+            send_json(process_add_user(j));
+        }
+        else if (*cmd == "SYNC") {
+            send_json(process_sync(j));
+        }
+        else if (*cmd == "LOGOUT") {
+            send_json(process_logout(j));
+        }
     } catch (const std::exception& e) {
         syslog(LOG_ERR, "JSON error: %s", e.what());
         send_json(JsonProtocol::make_error(400, "invalid json"));
-    }
-}
-
-json CommunicationModule::process_auth(const json& req) {
-    std::string login = req.value("login", "");
-    std::string password = req.value("password", ""); // в ТЗ — token, но на самом деле пароль при входе
-    auto sid = auth_manager_.authenticate(login, password);
-    if (sid) {
-        return {{"code", 200}, {"session_id", *sid}, {"answ", "ok"}};
-    } else {
-        return {{"code", 401}, {"answ", "unauthorized"}};
     }
 }
 

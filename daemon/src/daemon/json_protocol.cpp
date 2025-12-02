@@ -50,10 +50,17 @@ std::optional<AddUserRequest> JsonProtocol::parse_add_user(const json& j) {
         return std::nullopt;
     if (!j["login"].is_string() || !j["token"].is_string() || !j["level"].is_number_integer())
         return std::nullopt;
+
+    // Опциональные поля: если нет — пустая строка
+    std::string fio  = j.value("fio", "");
+    std::string post = j.value("post", "");
+
     return AddUserRequest{
         .session_id = j["session_id"],
         .login = j["login"],
-        .password = j["token"], // в протоколе "token", но это пароль
+        .token = j["token"], // в протоколе "token", но это пароль
+        .fio = fio,
+        .post = post,
         .level = j["level"]
     };
 }

@@ -40,7 +40,9 @@ struct StatRequest {
 struct AddUserRequest {
     std::string session_id;
     std::string login;
-    std::string password; // token в протоколе — но это пароль
+    std::string token; // token в протоколе — но это пароль
+    std::string fio;
+    std::string post;
     int level; // 0, 1, 2
 };
 

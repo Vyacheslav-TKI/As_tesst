@@ -109,7 +109,7 @@ void Celcon_daemon::mainloop() {
 
             FD_SET(inotify_fd, &readfds);
 
-            struct timeval timeout = {1, 0}; // 1 секунда
+            struct timeval timeout = {100, 0}; // 100 секунд
             int activity = select(max_fd, &readfds, nullptr, nullptr, &timeout);
             if (activity < 0) {
                 if (errno == EINTR) continue;

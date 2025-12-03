@@ -95,7 +95,8 @@ json CommunicationModule::process_auth(const json& req) {
     std::string password = req.value("token", ""); // в ТЗ — token, но на самом деле пароль при входе
     auto sid = auth_manager_.authenticate(login, password);
     if (sid) {
-        return {{"code", 200}, {"session_id", *sid}, {"answ", "ok"}};
+        User user = user_dao_->get_by_login(login).value();
+        return {{"code", 200}, {"answ", "ok"}, {"session_id", *sid}, {"fio", user.fio}, {"post", user.post}, {"role", user.role}};
     } else {
         return {{"code", 401}, {"answ", "unauthorized"}};
     }

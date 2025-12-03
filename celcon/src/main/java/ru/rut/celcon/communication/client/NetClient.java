@@ -1,5 +1,6 @@
 package ru.rut.celcon.communication.client;
 import ru.rut.celcon.FileInfo;
+import ru.rut.celcon.entities.FileToAdd;
 import ru.rut.celcon.entities.User;
 import tools.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +35,7 @@ public class NetClient {
     @Value("${daemon.port:9999}")
     private int daemonPort;
 
+
     // Хранение активных сессий: session_id → сессионный контекст
     private final Map<String, DaemonSession> activeSessions = new ConcurrentHashMap<>();
 
@@ -58,14 +60,19 @@ public class NetClient {
 
     public User auth(String login, String token) {
         Map<String, Object> command = Map.of("cmd", "AUTH", "login", login, "token", token);
-        try (SSLSocket socket = (SSLSocket) socketFactory.createSocket()) {
-            socket.connect(new InetSocketAddress(daemonHost, daemonPort), 5000); // 5 сек на подключение
+        SSLSocket socket = null;
+        BufferedWriter writer = null;
+        BufferedReader reader = null;
+        try {
+            socket = (SSLSocket) socketFactory.createSocket();
+            socket.connect(new InetSocketAddress(daemonHost, daemonPort), 100); // 0.01 сек на подключение
             socket.setSoTimeout(10000); // 10 сек на чтение ответа
 
             socket.startHandshake();
 
-            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
-                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8))) {
+
+                writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
+                reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
 
                 String jsonRequest = objectMapper.writeValueAsString(command);
                 writer.write(jsonRequest);
@@ -93,12 +100,40 @@ public class NetClient {
                     throw new RuntimeException((String)response.get("answ"));
                 }
                 registerSession(sessionId, socket, writer, reader);
+                //startSessionListening(sessionId, socket);
 
                 return new User(fio, post, role, sessionId);
-            }
         } catch (Exception e) {
             throw new RuntimeException("Daemon communication failed", e);
         }
+    }
+
+    // В NetClient.java
+    public void addFiles(String sessionId, List<FileToAdd> filesToAdd) {
+        /*
+        // Формируем структуру "files"
+        List<Map<String, Object>> filesJson = filesToAdd.stream()
+                .map(f -> Map.of(
+                        "path", f.getPath(),
+                        "alg", f.getAlg(),
+                        "hash", f.getHash(),
+                        "for_users", f.getForUsers()
+                        // "id" не нужен при добавлении — демон сам присвоит
+                ))
+                .toList();
+
+        Map<String, Object> command = Map.of(
+                "cmd", "ADD_FILES",
+                "session_id", sessionId,
+                "files", filesJson
+        );
+
+        Map<String, Object> response = sendCommand(sessionId, command);
+        Integer code = (Integer) response.get("code");
+        if (code == null || code != 200) {
+            String msg = (String) response.getOrDefault("answ", "Unknown error");
+            throw new RuntimeException("ADD_FILES failed: " + msg);
+        }*/
     }
 
     public List<FileInfo> sync(String sessionId) {
@@ -108,12 +143,15 @@ public class NetClient {
         // Отправляем команду через существующее соединение
         Map<String, Object> response = sendCommand(sessionId, command);
 
+
         // Проверяем код ответа
         Integer code = (Integer) response.get("code");
         if (code == null || code != 200) {
             String errorMsg = (String) response.getOrDefault("answ", "Unknown error");
             throw new RuntimeException("SYNC failed: " + errorMsg);
         }
+
+
 
         // Извлекаем список файлов
         List<Map<String, Object>> fileList = (List<Map<String, Object>>) response.get("files");

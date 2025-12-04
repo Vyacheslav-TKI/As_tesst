@@ -294,6 +294,9 @@ void CommunicationModule::handle_command(const std::string& raw) {
         else if (*cmd == "SYNC") {
             send_json(process_sync(j));
         }
+        else if (*cmd == "LIST_USERS") {
+            send_json(process_list_users(j));
+        }
         else if (*cmd == "LOGOUT") {
             send_json(process_logout(j));
         }

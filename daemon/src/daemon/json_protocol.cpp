@@ -65,6 +65,13 @@ std::optional<AddUserRequest> JsonProtocol::parse_add_user(const json& j) {
     };
 }
 
+std::optional<ListUsersRequest> JsonProtocol::parse_list_users(const json& j) {
+    if (!j.contains("session_id") || !j["session_id"].is_string()) return std::nullopt;
+    return ListUsersRequest{
+        .session_id = j["session_id"]
+    };
+}
+
 // --- Формирование ответов ---
 
 json JsonProtocol::make_success() {

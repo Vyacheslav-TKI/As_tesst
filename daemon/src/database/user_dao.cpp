@@ -90,4 +90,34 @@ bool UserDAO::add_default_admin() {
     admin.post = "System Administrator";
     return add_user(admin);
 }
+
+std::vector<User> UserDAO::get_all_users() {
+    const char* sql =
+        "SELECT UserID, UserLogin, UserPasswordHash, UserRole, FIO, Post "
+        "FROM Users";
+
+    sqlite3_stmt* stmt;
+    std::vector<User> users;
+
+    if (sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        syslog(LOG_ERR, "Failed to prepare get_all_users query: %s", sqlite3_errmsg(db_));
+        return users; // возвращаем пустой вектор
+    }
+
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        User u;
+        u.id            = sqlite3_column_int(stmt, 0);  // UserID
+        u.login         = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1)); // UserLogin
+        u.password_hash = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2)); // UserPasswordHash
+        u.role          = sqlite3_column_int(stmt, 3);  // UserRole
+        u.fio           = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4)); // FIO
+        u.post          = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 5)); // Post
+
+        users.push_back(u);
+    }
+
+    sqlite3_finalize(stmt);
+    return users;
+}
+
 // остальные методы аналогично (через prepared statements)

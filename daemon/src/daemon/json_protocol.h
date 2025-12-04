@@ -46,6 +46,10 @@ struct AddUserRequest {
     int level; // 0, 1, 2
 };
 
+struct ListUsersRequest {
+    std::string session_id;
+};
+
 struct LogoutRequest {
     std::string session_id;
 };
@@ -61,6 +65,7 @@ public:
     static std::optional<SyncRequest> parse_sync(const json& j);
     static std::optional<StatRequest> parse_stat(const json& j);
     static std::optional<AddUserRequest> parse_add_user(const json& j);
+    static std::optional<ListUsersRequest> parse_list_users(const json& j);
     static std::optional<LogoutRequest> parse_logout(const json& j);
 
     // === Формирование ответов ===

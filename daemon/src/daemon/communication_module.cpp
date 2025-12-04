@@ -160,6 +160,34 @@ json CommunicationModule::process_sync(const json& req) {
     return JsonProtocol::make_sync_response(files);
 }
 
+json CommunicationModule::process_list_users(const json& req) {
+    auto parsed = JsonProtocol::parse_list_users(req);
+    if (!parsed) {
+        return JsonProtocol::make_error(400, "invalid LIST_USERS request");
+    }
+
+    if (!auth_manager_.validate_session(parsed->session_id, /*min_role=*/1)) {
+        return JsonProtocol::make_error(403, "only users since level 1 can list users");
+    }
+
+   std::vector<User> users = user_dao_->get_all_users();
+
+    json users_array = json::array();
+    for (const User& user : users) {
+        users_array.push_back({
+            {"id", user.id},
+            {"fio", user.fio},
+            {"post", user.post}
+        });
+    }
+
+    return json{
+        {"code", 200},
+        {"answ", "ok"},
+        {"users", users_array}
+    };;
+}
+
 json CommunicationModule::process_add_user(const json& req) {
     auto parsed = JsonProtocol::parse_add_user(req);
     if (!parsed) {

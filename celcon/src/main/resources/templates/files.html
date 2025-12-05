@@ -117,6 +117,10 @@
   <div class="modal-content">
     <h3>Добавление файла (папки) для отслеживания</h3>
     <div class="form-group">
+        <div class="form-group">
+            <label>Полный путь к файлу или папке</label>
+            <input type="text" id="filePath" placeholder="/home/user/document.pdf" style="width:100%" />
+        </div>
       <label>Метод контроля целостности</label>
       <div class="format-group">
         <label><input type="radio" name="format" value="md5" checked> MD5</label>
@@ -126,8 +130,7 @@
     </div>
     <div>
       <button class="close-btn" onclick="closeAddFileModal()">Отмена</button>
-      <button class="submit-btn" onclick="selectFile()">Выбрать файл</button>
-      <button class="submit-btn" onclick="selectDirectory()">Выбрать папку</button>
+        <button class="submit-btn" onclick="confirmAddFile()">Добавить</button>
     </div>
   </div>
 </div>

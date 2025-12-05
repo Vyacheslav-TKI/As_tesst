@@ -1,5 +1,5 @@
 package ru.rut.celcon.communication.client;
-import ru.rut.celcon.FileInfo;
+import ru.rut.celcon.entities.FileInfo;
 import ru.rut.celcon.entities.FileToAdd;
 import ru.rut.celcon.entities.User;
 import tools.jackson.databind.ObjectMapper;
@@ -13,6 +13,7 @@ import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,17 +111,18 @@ public class NetClient {
 
     // В NetClient.java
     public void addFiles(String sessionId, List<FileToAdd> filesToAdd) {
-        /*
+
         // Формируем структуру "files"
-        List<Map<String, Object>> filesJson = filesToAdd.stream()
-                .map(f -> Map.of(
-                        "path", f.getPath(),
-                        "alg", f.getAlg(),
-                        "hash", f.getHash(),
-                        "for_users", f.getForUsers()
-                        // "id" не нужен при добавлении — демон сам присвоит
-                ))
-                .toList();
+        List<Map<String, Object>> filesJson = new ArrayList<>();
+        for (FileToAdd file : filesToAdd) {
+            filesJson.add(Map.of(
+                    "path", file.getPath(),
+                    "alg", file.getAlg(),
+                    "hash", file.getHash(),
+                    "for_users", file.getForUsers()
+                    // "id" не нужен при добавлении — демон сам присвоит
+            ));
+        }
 
         Map<String, Object> command = Map.of(
                 "cmd", "ADD_FILES",
@@ -133,7 +135,7 @@ public class NetClient {
         if (code == null || code != 200) {
             String msg = (String) response.getOrDefault("answ", "Unknown error");
             throw new RuntimeException("ADD_FILES failed: " + msg);
-        }*/
+        }
     }
 
     public List<FileInfo> sync(String sessionId) {
@@ -175,6 +177,28 @@ public class NetClient {
         if (path == null || path.isEmpty()) return "unknown";
         int lastSlash = path.lastIndexOf('/');
         return lastSlash >= 0 ? path.substring(lastSlash + 1) : path;
+    }
+
+    public void logout(String sessionId) {
+        Map<String, Object> command = Map.of("cmd", "LOGOUT", "session_id", sessionId);
+
+        // Отправляем команду через существующее соединение
+        Map<String, Object> response = sendCommand(sessionId, command);
+
+        // Проверяем код ответа
+        Integer code = (Integer) response.get("code");
+        if (code == null || code != 200) {
+            String errorMsg = (String) response.getOrDefault("answ", "Unknown error");
+            throw new RuntimeException("SYNC failed: " + errorMsg);
+        }
+        SessionConnection conn = activeConnections.get(sessionId);
+        try {
+            conn.getWriter().close();
+            conn.getReader().close();
+            conn.getSocket().close();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public void registerSession(String sessionId, SSLSocket socket, BufferedWriter writer, BufferedReader reader) {

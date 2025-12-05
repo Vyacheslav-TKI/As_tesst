@@ -1,4 +1,4 @@
-package ru.rut.celcon;
+package ru.rut.celcon.entities;
 
 public class FileInfo {
     private String name;

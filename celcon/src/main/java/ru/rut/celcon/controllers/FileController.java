@@ -5,7 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.*;
-import ru.rut.celcon.FileInfo;
+import ru.rut.celcon.entities.FileInfo;
 
 import java.util.List;
 
@@ -58,6 +58,19 @@ public class FileController {
         }
     }
 
+    @PostMapping("/api/logout")
+    @ResponseBody
+    public Map<String, Object> logout(HttpSession session) {
+        String sessionId = (String) session.getAttribute("daemonSessionId");
+        netClient.logout(sessionId);
+        session.removeAttribute("daemonSessionId");
+        return Map.of(
+                "code", 200,
+                "answ", "ok",
+                "redirectUrl", "/auth"
+        );
+    }
+
     @PostMapping("/api/files/add")
     @ResponseBody
     public Map<String, Object> addFiles(
@@ -84,7 +97,7 @@ public class FileController {
                         String hash = (String) f.get("hash");
                         String forUsers = (String) f.get("for_users");
 
-                        if (path == null || alg == null || hash == null || forUsers == null) {
+                        if (path == null || alg == null || hash == null) {
                             throw new IllegalArgumentException("Missing required field in file");
                         }
                         return new FileToAdd(path, alg, hash, forUsers);
@@ -92,6 +105,7 @@ public class FileController {
                     .toList();
 
             netClient.addFiles(sessionId, files);
+            netClient.sync(sessionId);
             return Map.of("code", 200, "answ", "ok");
         } catch (Exception e) {
             return Map.of("code", 500, "answ", "Failed to add files: " + e.getMessage());

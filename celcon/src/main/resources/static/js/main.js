@@ -106,18 +106,44 @@
     document.getElementById('addFileModal').style.display = 'none';
   }
 
-  function selectFile() {
-    var input = document.createElement('input');
-    input.type = 'file';
-    input.click();
-  }
+    function confirmAddFile() {
+        const path = document.getElementById('filePath').value.trim();
+        if (!path) {
+            alert("Укажите путь к файлу или папке");
+            return;
+        }
 
-  function selectDirectory() {
-    var input = document.createElement('input');
-    input.type = 'file';
-    input.webkitdirectory = true;
-    input.click();
-  }
+        // Алгоритм: MD5=0, SHA1=1, SHA256=2
+        const algMap = { md5: 0, sha1: 1, sha256: 2 };
+        const algRadio = document.querySelector('input[name="format"]:checked');
+        const alg = algMap[algRadio.value];
+
+        // Временный хеш (позже — вычисление на сервере)
+        const fakeHash = "";
+
+        const files = [{
+            path: path,
+            alg: alg,
+            hash: fakeHash,
+            for_users: ""
+        }];
+
+        fetch('/api/files/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ files })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.code === 200) {
+                alert("Файл добавлен");
+                closeAddFileModal();
+                location.reload();
+            } else {
+                alert("Ошибка: " + data.answ);
+            }
+        });
+    }
 
   function toggleAllFiles() {
     const checked = document.getElementById('select-all').checked;
@@ -169,5 +195,16 @@
   }
 
   function exitProfile() {
-    alert("Выход - заглушка")
+    fetch('/api/logout', {method: 'POST'}).then(res => res.json())
+                                              .then(data => {
+                                                  if (data.code === 200) {
+                                                      // Выполняем редирект вручную
+                                                      window.location.href = data.redirectUrl || '/auth';
+                                                  } else {
+                                                      alert('Ошибка при выходе: ' + data.answ);
+                                                  }
+                                              })
+                                              .catch(err => {
+                                                  alert('Ошибка сети: ' + err.message);
+                                              });
   }

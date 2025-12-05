@@ -34,7 +34,7 @@ void Database::initialize_tables() {
 
         "CREATE TABLE IF NOT EXISTS MonitoredFiles ("
             "FileID INTEGER PRIMARY KEY AUTOINCREMENT,"
-            "FilePath TEXT NOT NULL UNIQUE,"
+            "FilePath TEXT NOT NULL,"
             "ForUsers TEXT NOT NULL,"
             "HashAlgorithm INTEGER NOT NULL CHECK(HashAlgorithm BETWEEN 0 AND 4),"
             "Hash TEXT NOT NULL"

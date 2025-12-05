@@ -130,6 +130,9 @@ json CommunicationModule::process_add_files(const json& req) {
                 return JsonProtocol::make_error(500, "failed to compute hash for " + file.path);
             }
         }
+        if (file.for_users.empty()) {
+            file.for_users = "0";
+        }
 
         // Сохраняем в БД
         if (!file_dao_->add_file(file)) {
@@ -234,36 +237,62 @@ json CommunicationModule::process_add_user(const json& req) {
 
 void CommunicationModule::handle_incoming() {
     if (!client_connected_) {
-        int client_fd = accept(server_fd_, nullptr, nullptr);
-        if (client_fd < 0) return;
+        struct sockaddr_in client_addr;
+        socklen_t client_len = sizeof(client_addr);
+        int client_fd = accept(server_fd_, (struct sockaddr*)&client_addr, &client_len);
+        if (client_fd < 0) {
+            if (errno == EAGAIN || errno == EWOULDBLOCK) {
+                return; // Нет входящих подключений (non-blocking)
+            }
+            syslog(LOG_ERR, "accept() failed: %m");
+            return;
+        }
 
         ssl_ = SSL_new(ctx_);
-        SSL_set_fd(ssl_, client_fd);
-        if (SSL_accept(ssl_) <= 0) {
-            ERR_print_errors_fp(stderr);
+        if (!ssl_) {
             close(client_fd);
             return;
         }
+
+        SSL_set_fd(ssl_, client_fd);
+        if (SSL_accept(ssl_) <= 0) {
+            ERR_print_errors_fp(stderr);
+            SSL_free(ssl_);
+            ssl_ = nullptr;
+            close(client_fd);
+            return;
+        }
+
         recv_buffer_.clear();
         client_connected_ = true;
         syslog(LOG_INFO, "Client connected via TLS");
-    }
-
-    char buffer[4096];
-    int bytes = SSL_read(ssl_, buffer, sizeof(buffer) - 1);
-    if (bytes <= 0) {
-        // ... обработка отключения
         return;
     }
 
-    // Добавляем прочитанные данные в внутренний буфер
+    // Чтение от существующего клиента
+    char buffer[4096];
+    int bytes = SSL_read(ssl_, buffer, sizeof(buffer) - 1);
+    if (bytes <= 0) {
+        int err = SSL_get_error(ssl_, bytes);
+        if (err == SSL_ERROR_ZERO_RETURN || err == SSL_ERROR_SSL || err == SSL_ERROR_SYSCALL) {
+            // Клиент закрыл соединение или ошибка
+            syslog(LOG_INFO, "Client disconnected");
+        }
+
+        SSL_free(ssl_);
+        ssl_ = nullptr;
+        client_connected_ = false; // ← ОБЯЗАТЕЛЬНО сбросить!
+        recv_buffer_.clear();
+        return;
+    }
+
+    buffer[bytes] = '\0';
     recv_buffer_.append(buffer, bytes);
 
-    // Обрабатываем все полные строки (до \n)
     size_t pos;
     while ((pos = recv_buffer_.find('\n')) != std::string::npos) {
         std::string line = recv_buffer_.substr(0, pos);
-        recv_buffer_.erase(0, pos + 1); // удаляем строку + \n
+        recv_buffer_.erase(0, pos + 1);
 
         if (!line.empty()) {
             handle_command(line);

@@ -1,5 +1,6 @@
 // monitored_file_dao.cpp — ключевой метод get_for_user
 #include "monitored_file_dao.h"
+#include <syslog.h>
 std::vector<MonitoredFile> MonitoredFileDAO::get_for_user(int user_id) {
     // Запрос: все файлы, где ForUsers = '0' ИЛИ ForUsers содержит user_id
     const char* sql =
@@ -41,6 +42,7 @@ bool MonitoredFileDAO::add_file(const MonitoredFile& file) {
     sqlite3_bind_text(stmt, 4, file.baseline_hash.c_str(), -1, SQLITE_STATIC);
     bool ok = (sqlite3_step(stmt) == SQLITE_DONE);
     sqlite3_finalize(stmt);
+    syslog(LOG_DEBUG, sqlite3_errmsg(db_));
     return ok;
 }
 

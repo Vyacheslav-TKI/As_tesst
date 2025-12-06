@@ -22,19 +22,20 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Component
-public class NetClient {
+public class NetClient implements AutoCloseable {
 
     private final SSLSocketFactory socketFactory;
     private final ObjectMapper objectMapper;
     private final WebSocketEventService webSocketEventService; // ← внедряем один раз
     private final ExecutorService eventExecutor = Executors.newCachedThreadPool();
     private final Map<String, SessionConnection> activeConnections;
+    private final SessionConnection sessionConnection;
 
     @Value("${daemon.host:localhost}")
-    private String daemonHost;
+    private String daemonHost = "localhost";
 
     @Value("${daemon.port:9999}")
-    private int daemonPort;
+    private int daemonPort = 9999;
 
 
     // Хранение активных сессий: session_id → сессионный контекст
@@ -45,6 +46,27 @@ public class NetClient {
         this.objectMapper = objectMapper;
         this.webSocketEventService = webSocketEventService;
         activeConnections = new HashMap<>();
+        sessionConnection = connect();
+    }
+
+    public SessionConnection connect() {
+        SSLSocket socket = null;
+        BufferedWriter writer = null;
+        BufferedReader reader = null;
+        try {
+            socket = (SSLSocket) socketFactory.createSocket();
+            socket.connect(new InetSocketAddress(daemonHost, daemonPort), 100); // 0.01 сек на подключение
+            socket.setSoTimeout(10000); // 10 сек на чтение ответа
+
+            socket.startHandshake();
+
+
+            writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+        } catch (Exception e) {
+            throw new RuntimeException("Daemon communication failed", e);
+        }
+        return new SessionConnection(socket, writer, reader);
     }
 
     public int getDaemonPort() {
@@ -61,52 +83,39 @@ public class NetClient {
 
     public User auth(String login, String token) {
         Map<String, Object> command = Map.of("cmd", "AUTH", "login", login, "token", token);
-        SSLSocket socket = null;
-        BufferedWriter writer = null;
-        BufferedReader reader = null;
+
+        String jsonRequest = objectMapper.writeValueAsString(command);
+        String sessionId = null;
+        String fio = null;
+        String post = null;
+        int role = -1;
         try {
-            socket = (SSLSocket) socketFactory.createSocket();
-            socket.connect(new InetSocketAddress(daemonHost, daemonPort), 100); // 0.01 сек на подключение
-            socket.setSoTimeout(10000); // 10 сек на чтение ответа
+            sessionConnection.getWriter().write(jsonRequest);
+            sessionConnection.getWriter().newLine();
+            sessionConnection.getWriter().flush();
 
-            socket.startHandshake();
+            String line = sessionConnection.getReader().readLine(); // ← может зависнуть без setSoTimeout()
+            if (line == null) {
+                throw new RuntimeException("Daemon closed connection unexpectedly");
+            }
+            Map<String, Object> response = objectMapper.readValue(line, Map.class);
+
+            if (response == null) throw new RuntimeException("No response from daemon");
 
 
-                writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
-                reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
-
-                String jsonRequest = objectMapper.writeValueAsString(command);
-                writer.write(jsonRequest);
-                writer.newLine();
-                writer.flush();
-
-                String line = reader.readLine(); // ← может зависнуть без setSoTimeout()
-                if (line == null) {
-                    throw new RuntimeException("Daemon closed connection unexpectedly");
-                }
-                Map<String, Object> response = objectMapper.readValue(line, Map.class);
-
-                if (response == null) throw new RuntimeException("No response from daemon");
-
-                String sessionId = null;
-                String fio = null;
-                String post = null;
-                int role = -1;
-                if (Integer.valueOf(200).equals(response.get("code"))) {
-                    sessionId = (String) response.get("session_id");
-                    fio = (String) response.get("fio");
-                    post = (String) response.get("post");
-                    role = (int) response.get("role");
-                } else {
-                    throw new RuntimeException((String)response.get("answ"));
-                }
-                registerSession(sessionId, socket, writer, reader);
-                //startSessionListening(sessionId, socket);
-
-                return new User(fio, post, role, sessionId);
+            if (Integer.valueOf(200).equals(response.get("code"))) {
+                sessionId = (String) response.get("session_id");
+                fio = (String) response.get("fio");
+                post = (String) response.get("post");
+                role = (int) response.get("role");
+            } else {
+                throw new RuntimeException((String) response.get("answ"));
+            }
+            //startSessionListening(sessionId, socket);
         } catch (Exception e) {
-            throw new RuntimeException("Daemon communication failed", e);
+            throw new RuntimeException(e.getMessage());
         }
+        return new User(fio, post, role, sessionId);
     }
 
     // В NetClient.java
@@ -130,7 +139,7 @@ public class NetClient {
                 "files", filesJson
         );
 
-        Map<String, Object> response = sendCommand(sessionId, command);
+        Map<String, Object> response = sendCommand(command);
         Integer code = (Integer) response.get("code");
         if (code == null || code != 200) {
             String msg = (String) response.getOrDefault("answ", "Unknown error");
@@ -143,7 +152,7 @@ public class NetClient {
         Map<String, Object> command = Map.of("cmd", "SYNC", "session_id", sessionId);
 
         // Отправляем команду через существующее соединение
-        Map<String, Object> response = sendCommand(sessionId, command);
+        Map<String, Object> response = sendCommand(command);
 
 
         // Проверяем код ответа
@@ -152,8 +161,6 @@ public class NetClient {
             String errorMsg = (String) response.getOrDefault("answ", "Unknown error");
             throw new RuntimeException("SYNC failed: " + errorMsg);
         }
-
-
 
         // Извлекаем список файлов
         List<Map<String, Object>> fileList = (List<Map<String, Object>>) response.get("files");
@@ -183,21 +190,13 @@ public class NetClient {
         Map<String, Object> command = Map.of("cmd", "LOGOUT", "session_id", sessionId);
 
         // Отправляем команду через существующее соединение
-        Map<String, Object> response = sendCommand(sessionId, command);
+        Map<String, Object> response = sendCommand(command);
 
         // Проверяем код ответа
         Integer code = (Integer) response.get("code");
         if (code == null || code != 200) {
             String errorMsg = (String) response.getOrDefault("answ", "Unknown error");
-            throw new RuntimeException("SYNC failed: " + errorMsg);
-        }
-        SessionConnection conn = activeConnections.get(sessionId);
-        try {
-            conn.getWriter().close();
-            conn.getReader().close();
-            conn.getSocket().close();
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException("LOGOUT failed: " + errorMsg);
         }
     }
 
@@ -205,27 +204,23 @@ public class NetClient {
         activeConnections.put(sessionId, new SessionConnection(socket, writer, reader));
     }
 
-    public Map<String, Object> sendCommand(String sessionId, Map<String, Object> command) {
-        SessionConnection conn = activeConnections.get(sessionId);
-        if (conn == null) {
-            throw new RuntimeException("Session not found: " + sessionId);
+    public Map<String, Object> sendCommand(Map<String, Object> command) {
+        if (sessionConnection == null) {
+            throw new RuntimeException("Session not found");
         }
 
         try {
             String json = objectMapper.writeValueAsString(command);
-            conn.getWriter().write(json);
-            conn.getWriter().newLine();
-            conn.getWriter().flush();
+            sessionConnection.getWriter().write(json);
+            sessionConnection.getWriter().newLine();
+            sessionConnection.getWriter().flush();
 
-            String responseLine = conn.getReader().readLine();
+            String responseLine = sessionConnection.getReader().readLine();
             if (responseLine == null) {
                 throw new RuntimeException("Daemon closed session");
             }
             return objectMapper.readValue(responseLine, Map.class);
         } catch (Exception e) {
-            // Закрыть сессию при ошибке
-            activeConnections.remove(sessionId);
-            try { conn.getSocket().close(); } catch (Exception ignored) {}
             throw new RuntimeException("Command failed", e);
         }
     }
@@ -247,5 +242,14 @@ public class NetClient {
         if (session != null) {
             session.close();
         }
+    }
+    public void disconnect() throws IOException {
+        sessionConnection.getWriter().close();
+        sessionConnection.getReader().close();
+        sessionConnection.getSocket().close();
+    }
+    @Override
+    public void close() throws IOException {
+        disconnect();
     }
 }

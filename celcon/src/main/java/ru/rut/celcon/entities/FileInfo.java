@@ -1,6 +1,7 @@
 package ru.rut.celcon.entities;
 
 public class FileInfo {
+    private int id;
     private String name;
     private String path;
     private boolean changed;
@@ -33,5 +34,13 @@ public class FileInfo {
 
     public void setChanged(boolean changed) {
         this.changed = changed;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

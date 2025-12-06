@@ -111,7 +111,6 @@ public class NetClient implements AutoCloseable {
             } else {
                 throw new RuntimeException((String) response.get("answ"));
             }
-            //startSessionListening(sessionId, socket);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }

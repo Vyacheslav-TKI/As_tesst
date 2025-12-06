@@ -77,39 +77,53 @@
 
 <!-- Модальное окно отчёта -->
 <div class="modal" id="reportModal">
-  <div class="modal-content">
-    <h3>Создание отчёта</h3>
-    <div class="form-group">
-      <label>Период</label>
-      <div style="display:flex;gap:10px;">
-        <input type="date" id="rep-from">
-        <span>–</span>
-        <input type="date" id="rep-to">
-      </div>
+    <div class="modal-content">
+        <h3>Создание отчёта</h3>
+        <div class="form-group">
+            <label>Период</label>
+            <div style="display:flex;gap:10px;">
+                <input type="date" id="rep-from">
+                <span>–</span>
+                <input type="date" id="rep-to">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" id="select-all" width="100%" onchange="toggleAllFiles()"> Выбрать все файлы
+            </label>
+            <div class="file-list-check" id="file-check-list">
+                <div class="file-item" th:each="file : ${files}">
+                    <div class="file-info">
+                        <div class="file-details">
+                            <div class="file-name" th:text="${file.name}">placeholder</div>
+                            <div class="file-path" th:text="${file.path}">/path/to/placeholder</div>
+                        </div>
+                    </div>
+                    <div class="file-controls">
+                        <div class="file-checkbox-wrapper">
+                            <input type="checkbox"
+                                   class="file-checkbox"
+                                   th:id="${'file-' + file.id}"
+                                   th:name="selectedFiles"
+                                   th:value="${file.id}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Формат отчёта</label>
+            <div class="format-group">
+                <label><input type="radio" name="format" value="csv" checked> CSV</label>
+                <label><input type="radio" name="format" value="html"> HTML</label>
+                <label><input type="radio" name="format" value="txt"> TXT</label>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="close-btn" onclick="closeReportModal()">Отмена</button>
+            <button class="submit-btn" onclick="generateReport()">Сформировать</button>
+        </div>
     </div>
-    <div class="form-group">
-      <label>
-        <input type="checkbox" id="select-all" onchange="toggleAllFiles()"> Выбрать все файлы
-      </label>
-      <div class="file-list-check" id="file-check-list">
-        <label><input type="checkbox" value="1"> cat.jpg</label>
-        <label><input type="checkbox" value="2"> report.pdf</label>
-        <label><input type="checkbox" value="3"> config.ini</label>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Формат отчёта</label>
-      <div class="format-group">
-        <label><input type="radio" name="format" value="csv" checked> CSV</label>
-        <label><input type="radio" name="format" value="html"> HTML</label>
-        <label><input type="radio" name="format" value="txt"> TXT</label>
-      </div>
-    </div>
-    <div>
-      <button class="close-btn" onclick="closeReportModal()">Отмена</button>
-      <button class="submit-btn" onclick="generateReport()">Сформировать</button>
-    </div>
-  </div>
 </div>
 
 <!-- Модальное окно выбора файла -->

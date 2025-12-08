@@ -11,6 +11,9 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <nlohmann/json.hpp>
+#include <thread>
+#include <atomic>
+
 using json = nlohmann::json;
 
 class Database;
@@ -31,6 +34,12 @@ private:
     MonitoredFileDAO* file_dao_;
 
     std::string recv_buffer_;
+
+    std::atomic<bool> background_check_active_{false};
+    std::thread background_check_thread_;
+
+    void start_background_integrity_check(const std::vector<MonitoredFile>& files);
+    void background_integrity_worker(std::vector<MonitoredFile> files);
 
     void init_tls();
     void handle_command(const std::string& json_str);

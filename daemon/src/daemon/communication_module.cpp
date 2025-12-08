@@ -36,6 +36,21 @@ int CommunicationModule::get_client_fd() const {
     return SSL_get_fd(ssl_); // возвращает underlying file descriptor
 }
 
+void CommunicationModule::background_integrity_worker(std::vector<MonitoredFile> files) {
+    for (const auto& file : files) {
+        std::string current_hash = hasher_->compute_hash(file.path, file.algorithm);
+        if (current_hash != file.baseline_hash) {
+            // Файл изменён — отправляем событие
+            json event = JsonProtocol::make_file_changed_event(
+                file.file_id, file.path, current_hash
+            );
+            // Отправка через TLS — НЕБЛОКИРУЮЩАЯ
+            send_json(event);
+        }
+    }
+    background_check_active_ = false;
+}
+
 void CommunicationModule::init_tls() {
     SSL_library_init();
     OpenSSL_add_ssl_algorithms();
@@ -160,6 +175,16 @@ json CommunicationModule::process_sync(const json& req) {
 
     // Только файлы, доступные этому пользователю
     auto files = file_dao_->get_for_user(user_opt->id);
+
+    // Запускаем фоновую проверку, если ещё не запущена
+    if (!background_check_active_.exchange(true)) {
+        // Передаём копию файлов в поток
+        background_check_thread_ = std::thread(
+            &CommunicationModule::background_integrity_worker, this, files
+        );
+        background_check_thread_.detach(); // или join при отключении
+    }
+
     return JsonProtocol::make_sync_response(files);
 }
 
@@ -180,7 +205,8 @@ json CommunicationModule::process_list_users(const json& req) {
         users_array.push_back({
             {"id", user.id},
             {"fio", user.fio},
-            {"post", user.post}
+            {"post", user.post},
+            {"role", user.role}
         });
     }
 

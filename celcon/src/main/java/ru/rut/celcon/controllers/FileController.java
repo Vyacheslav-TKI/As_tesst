@@ -20,9 +20,12 @@ public class FileController {
 
     private final NetClient netClient;
 
+    private List<FileInfo> files = null;
+
     public FileController(NetClient netClient) {
         this.netClient = netClient;
     }
+
 
     @GetMapping("/files")
     public String showFiles(Model model, HttpSession session) {
@@ -44,9 +47,10 @@ public class FileController {
             model.addAttribute("userLevel", "");
         }
         model.addAttribute("userPost", session.getAttribute("userPost"));
+        model.addAttribute("isAdmin",session.getAttribute("isAdmin"));
 
         try {
-            List<FileInfo> files = netClient.sync(sessionId);
+            files = netClient.sync(sessionId);
             boolean hasEditRights = userLevel >= 1;
 
             model.addAttribute("files", files);
@@ -116,5 +120,51 @@ public class FileController {
         if (path == null || path.isEmpty()) return "unknown";
         int lastSlash = path.lastIndexOf('/');
         return lastSlash >= 0 ? path.substring(lastSlash + 1) : path;
+    }
+
+    @PostMapping("/api/files/delete")
+    @ResponseBody
+    public Map<String, Object> deleteFile(
+            @RequestBody Map<String, Long> request,
+            HttpSession session) {
+
+        String sessionId = (String) session.getAttribute("daemonSessionId");
+        if (sessionId == null) {
+            return Map.of("code", 401, "answ", "Not authenticated");
+        }
+
+        try {
+            Long fileId = request.get("id");
+            if (fileId == null) {
+                return Map.of("code", 400, "answ", "File ID is required");
+            }
+
+            // Вызываем метод удаления в netClient
+            // netClient.deleteFile(sessionId, fileId);
+            // netClient.sync(sessionId);
+
+            return Map.of("code", 200, "answ", "ok");
+        } catch (Exception e) {
+            return Map.of("code", 500, "answ", "Failed to delete file: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/api/files/update")
+    @ResponseBody
+    public Map<String, Object> updateFile(
+            @RequestBody Map<String, Object> request,
+            HttpSession session) {
+
+        String sessionId = (String) session.getAttribute("daemonSessionId");
+        if (sessionId == null) {
+            return Map.of("code", 401, "answ", "Not authenticated");
+        }
+
+        try {
+            // Логика обновления файла
+            return Map.of("code", 200, "answ", "ok");
+        } catch (Exception e) {
+            return Map.of("code", 500, "answ", "Failed to update file: " + e.getMessage());
+        }
     }
 }

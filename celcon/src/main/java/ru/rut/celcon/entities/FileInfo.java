@@ -6,7 +6,8 @@ public class FileInfo {
     private String path;
     private boolean changed;
 
-    public FileInfo(String name, String path, boolean changed) {
+    public FileInfo(int id, String name, String path, boolean changed) {
+        this.id = id;
         this.name = name;
         this.path = path;
         this.changed = changed;

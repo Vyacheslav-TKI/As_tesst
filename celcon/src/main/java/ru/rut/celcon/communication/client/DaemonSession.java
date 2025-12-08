@@ -1,6 +1,7 @@
 package ru.rut.celcon.communication.client;
 
-import tools.jackson.databind.ObjectMapper;import ru.rut.celcon.communication.client.websocket.WebSocketEventService;
+import ru.rut.celcon.services.WebSocketEventService;
+import tools.jackson.databind.ObjectMapper;
 
 import javax.net.ssl.SSLSocket;
 import java.io.BufferedReader;
@@ -35,7 +36,7 @@ public class DaemonSession implements Runnable {
 
                 if (message.containsKey("event")) {
                     // Это событие от демона — отправляем в WebSocket
-                    webSocketEventService.sendEventToSession(sessionId, message);
+                    webSocketEventService.sendEventToBrowser(message);
                 }
                 // Ответы на команды обычно не приходят сюда (они синхронные),
                 // но если демон шлёт асинхронные подтверждения — можно обработать
@@ -44,7 +45,7 @@ public class DaemonSession implements Runnable {
         } catch (Exception e) {
             if (!closed.get()) {
                 // Сессия разорвана — уведомить фронтенд
-                webSocketEventService.sendEventToSession(sessionId, Map.of(
+                webSocketEventService.sendEventToBrowser(Map.of(
                         "event", "SESSION_BROKEN",
                         "session_id", sessionId,
                         "error", e.getMessage()

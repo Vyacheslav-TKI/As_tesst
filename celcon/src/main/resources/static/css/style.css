@@ -89,6 +89,14 @@
       margin-bottom: 60px;
     }
 
+    /* Для выпадающего меню у пользователей */
+    .user-controls {
+      position: relative;
+    }
+    .user-controls .dropdown-menu {
+      top: 30px;
+    }
+
     /* Список файлов */
     .file-list {
       display: flex;
@@ -417,4 +425,22 @@
       align-items: center;
       gap: 6px;
     }
+
+    .user-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .user-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 16px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .user-info { flex: 1; }
+    .user-fio { font-size: 16px; font-weight: bold; }
+    .user-post { font-size: 13px; color: #666; margin-top: 4px; }
 

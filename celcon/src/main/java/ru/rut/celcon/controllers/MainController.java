@@ -15,6 +15,8 @@ public class MainController {
 
         // Загрузка списка файлов через демон (используя session_id из сессии)
         // model.addAttribute("files", ...);
+        model.addAttribute("isAdmin",Integer.parseInt(String.valueOf(
+                session.getAttribute("userLevel"))) == 2);
         return "redirect:/files";
     }
 }

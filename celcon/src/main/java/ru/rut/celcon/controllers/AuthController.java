@@ -40,6 +40,7 @@ public class AuthController {
             session.setAttribute("userLevel", user.role);
             session.setAttribute("userFio", user.fio);
             session.setAttribute("userPost", user.post);
+            session.setAttribute("isAdmin",user.role == 2);
 
             // Возвращаем JSON, как от демона — или свой формат с code=200
             return Map.of(

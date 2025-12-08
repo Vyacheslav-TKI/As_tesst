@@ -9,13 +9,24 @@
 </head>
 <body>
 
+<script>
+    // Для обратной совместимости
+    window.legacyMode = false;
+
+    // Проверяем, нужно ли использовать старый режим
+    if (window.location.search.includes('legacy=1')) {
+        window.legacyMode = true;
+    }
+</script>
+
 <header>
   <h1>ЦЕЛКОН</h1>
 </header>
 
 <div class="tabs">
-  <button class="tab-btn active" data-tab="files">Файлы</button>
-  <button class="tab-btn" data-tab="stats">Статистика</button>
+    <a class="tab-btn active" data-tab="files">Файлы</a>
+    <a class="tab-btn" data-tab="stats">Статистика</a>
+    <a class="tab-btn" th:if="${isAdmin}" th:href="@{/users}">Пользователи</a>
 </div>
 
 <button class="myprofile-btn" onclick="showProfileInfo()" th:text="${userFio}">User</button>
@@ -33,15 +44,16 @@
     <h2>Список отслеживания</h2>
     <br>
     <div class="file-list">
-      <div class="file-item" th:each="file : ${files}">
+      <div class="file-item" th:each="file : ${files}"  th:attr="data-file-id=${file.id}">
         <div class="file-info">
           <div class="file-name" th:text="${file.name}">placeholder</div>
           <div class="file-path" th:text="${file.path}">/path/to/placeholder</div>
         </div>
           <div class="file-controls">
-            <!-- Только для пользователя уровня 1 или админа -->
-            <div th:if="${file.changed}" class="status-badge changed">ИЗМЕНЁН</div>
-            <div th:if="${!file.changed}"  class="status-badge unchanged">НЕ ИЗМЕНЁН</div>
+              <div class="status-badge" th:classappend="${file.changed} ? 'changed' : 'unchanged'"
+                   th:text="${file.changed} ? 'ИЗМЕНЁН' : 'НЕ ИЗМЕНЁН'"
+                   th:attr="data-status=${file.changed} ? 'changed' : 'unchanged'">
+              </div>
             <button class="menu-btn" th:if="${hasEditRights}">⋮</button>
 
             <!-- Выпадающее меню (изначально скрыто) -->
@@ -70,6 +82,32 @@
     </div>
     <canvas id="statsChart"></canvas>
   </div>
+    <div class="tab-content" id="users-tab" th:if="${isAdmin}">
+        <h2>Пользователи</h2>
+        <br>
+        <div class="user-list">
+            <div class="user-item" th:each="user : ${users}">
+                <div class="user-info">
+                    <div class="user-fio" th:text="${user.fio}">FIO</div>
+                    <div class="file-post" th:text="${user.path}">post</div>
+                </div>
+                <div class="user-controls">
+                    <!-- Только для пользователя уровня 1 или админа -->
+                    <div th:if="${user.role == 2}" class="status-badge admin">Админ</div>
+                    <div th:if="${user.role == 1}"  class="status-badge level_1">Уровень 1</div>
+                    <div th:if="${user.role == 0}"  class="status-badge level_2">Уровень 2</div>
+                    <button class="menu-btn">⋮</button>
+
+                    <!-- Выпадающее меню (изначально скрыто) -->
+                    <div class="dropdown-menu">
+                        <button class="dropdown-item"  th:data-filename="${user.id}">Изменить</button>
+                        <button class="dropdown-item"  th:data-filename="${user.id}">Удалить</button>
+                    </div>
+                </div>
+            </div>
+            <button class="add-file-btn" onclick="openAddUserModal()">+ Добавить пользователя</button>
+        </div>
+    </div>
 </div>
 
 <!-- Кнопка "Создать отчёт" -->

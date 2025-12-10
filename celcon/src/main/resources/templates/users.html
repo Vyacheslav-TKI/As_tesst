@@ -29,6 +29,58 @@
     <button class="exit-btn" onclick="exitProfile()">Выйти</button>
 </div>
 
+<button class="report-btn" onclick="openReportModal()">Создать отчёт</button>
+
+<div class="modal" id="reportModal">
+    <div class="modal-content">
+        <h3>Создание отчёта</h3>
+        <div class="form-group">
+            <label>Период</label>
+            <div style="display:flex;gap:10px;">
+                <input type="date" id="rep-from">
+                <span>–</span>
+                <input type="date" id="rep-to">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" id="select-all" width="100%" onchange="toggleAllFiles()"> Выбрать все файлы
+            </label>
+            <div class="file-list-check" id="file-check-list">
+                <div class="file-item" th:each="file : ${files}">
+                    <div class="file-info">
+                        <div class="file-details">
+                            <div class="file-name" th:text="${file.name}">placeholder</div>
+                            <div class="file-path" th:text="${file.path}">/path/to/placeholder</div>
+                        </div>
+                    </div>
+                    <div class="file-controls">
+                        <div class="file-checkbox-wrapper">
+                            <input type="checkbox"
+                                   class="file-checkbox"
+                                   th:id="${'file-' + file.id}"
+                                   th:name="selectedFiles"
+                                   th:value="${file.id}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Формат отчёта</label>
+            <div class="format-group">
+                <label><input type="radio" name="format" value="csv" checked> CSV</label>
+                <label><input type="radio" name="format" value="html"> HTML</label>
+                <label><input type="radio" name="format" value="txt"> TXT</label>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="close-btn" onclick="closeReportModal()">Отмена</button>
+            <button class="submit-btn" onclick="generateReport()">Сформировать</button>
+        </div>
+    </div>
+</div>
+
 <div class="container">
     <h2>Пользователи</h2>
     <br>
@@ -39,9 +91,9 @@
                 <div class="user-post" th:text="${user.post}">Должность</div>
             </div>
             <div class="user-controls">
-                <div th:if="${user.role == 2}" class="status-badge admin">Админ</div>
+                <!-- <div th:if="${user.role == 2}" class="status-badge admin">Админ</div>
                 <div th:if="${user.role == 1}" class="status-badge level_1">Уровень 1</div>
-                <div th:if="${user.role == 0}" class="status-badge level_2">Уровень 2</div>
+                <div th:if="${user.role == 0}" class="status-badge level_2">Уровень 2</div> -->
                 <button class="menu-btn">⋮</button>
                 <div class="dropdown-menu">
                     <button class="dropdown-item" th:onclick="|editUser('${user.id}')|">Изменить</button>
@@ -69,9 +121,17 @@
             <label>Уровень доступа</label>
             <select id="userRole" style="width:100%">
                 <option value="0">Уровень 2 (только просмотр)</option>
-                <option value="1">Уровень 1 (редактирование файлов)</option>
+                <option value="1">Уровень 1 (редактирование списка файлов)</option>
                 <option value="2">Администратор</option>
             </select>
+        </div>
+        <div class="form-group">
+            <label>Логин</label>
+            <input type="text" id="userLogin" placeholder="логин" style="width:100%" />
+        </div>
+        <div class="form-group">
+            <label>Пароль</label>
+            <input type="text" id="userPassword" placeholder="пароль" style="width:100%" />
         </div>
         <div class="modal-actions">
             <button class="close-btn" onclick="closeAddUserModal()">Отмена</button>

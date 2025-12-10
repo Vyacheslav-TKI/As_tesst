@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import ru.rut.celcon.communication.client.NetClient;
 import ru.rut.celcon.entities.UserInfo;
+import ru.rut.celcon.entities.UserToAdd;
 
 import java.util.List;
 import java.util.Map;
@@ -54,12 +55,16 @@ public class UsersController {
         if (sessionId == null) {
             return Map.of("code", 401, "answ", "Not authenticated");
         }
-
-        String login = (String) request.get("login");
-        String password = (String) request.get("password");
-        String fio = (String) request.get("fio");
-        String post = (String) request.get("post");
-        int role = (Integer) request.get("role");
-        return null;
+        try {
+            String login = (String) request.get("login");
+            String password = (String) request.get("password");
+            String fio = (String) request.get("fio");
+            String post = (String) request.get("post");
+            int role = (Integer) request.get("role");
+            netClient.addUser(sessionId, new UserToAdd(fio, post, role, login, password));
+            return Map.of("code", 200, "answ", "ok");
+        }  catch (Exception e) {
+            return Map.of("code", 500, "answ", "Failed to add user: " + e.getMessage());
+        }
     }
 }

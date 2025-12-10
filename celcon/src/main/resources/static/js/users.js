@@ -67,19 +67,43 @@ function deleteUser(id) {
     }
 }
 
-function confirmAddUser() {
+async function confirmAddUser() {
     const fio = document.getElementById('userFio').value.trim();
     const post = document.getElementById('userPost').value.trim();
-    const role = document.getElementById('userRole').value;
+    const role = Number(document.getElementById('userRole').value);
+    const login = document.getElementById('userLogin').value.trim();
+    const password = document.getElementById('userPassword').value;
 
-    if (!fio || !post) {
+    // Проверяем ВСЕ обязательные поля
+    if (!fio || !post || !role || !login || !password) {
         alert('Заполните все поля');
         return;
     }
 
-    // В будущем: отправка на /api/users/add
-    alert(`Пользователь "${fio}" будет добавлен с ролью ${role}`);
-    closeAddUserModal();
+    try {
+        const response = await fetch('/api/users/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ fio, post, role, login, password })
+        });
+
+        const data = await response.json();
+
+        if (data.code === 200) {
+            alert(`Пользователь "${fio}" будет добавлен с ролью ${role}`);
+            closeAddUserModal();
+        } else {
+            alert(data.answ || 'Ошибка добавления пользователя');
+        }
+    } catch (err) {
+        alert('Ошибка сети или сервера: ' + err.message);
+    }
+    // Уберите этот alert, если хотите чтобы после успешного добавления
+    // происходил redirect на /users
+    // alert(`Пользователь "${fio}" будет добавлен с ролью ${role}`);
+    // closeAddUserModal();
 }
 
 // Закрытие модалок по клику на фон

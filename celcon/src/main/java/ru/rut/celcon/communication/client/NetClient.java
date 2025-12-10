@@ -1,10 +1,7 @@
 package ru.rut.celcon.communication.client;
 
 import org.springframework.web.socket.WebSocketSession;
-import ru.rut.celcon.entities.FileInfo;
-import ru.rut.celcon.entities.FileToAdd;
-import ru.rut.celcon.entities.User;
-import ru.rut.celcon.entities.UserInfo;
+import ru.rut.celcon.entities.*;
 import ru.rut.celcon.services.WebSocketEventService;
 import tools.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -181,6 +178,27 @@ public class NetClient implements AutoCloseable {
                 "cmd", "ADD_FILES",
                 "session_id", sessionId,
                 "files", filesJson
+        );
+
+        executeCommand(command, response -> {
+            Integer code = (Integer) response.get("code");
+            if (code == null || code != 200) {
+                String msg = (String) response.getOrDefault("answ", "Unknown error");
+                throw new RuntimeException("ADD_FILES failed: " + msg);
+            }
+            return null;
+        });
+    }
+
+    public void addUser(String sessionId, UserToAdd user) {
+        Map<String, Object> command = Map.of(
+                "cmd", "ADD_USER",
+                "session_id", sessionId,
+                "fio", user.getFio(),
+                "post", user.getPost(),
+                "level", user.getRole(),
+                "login", user.getLogin(),
+                "token", user.getPassword()
         );
 
         executeCommand(command, response -> {

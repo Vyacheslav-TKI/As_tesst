@@ -49,7 +49,7 @@ public class NetClient implements AutoCloseable {
     private synchronized void initializeConnection() {
         try {
             SSLSocket socket = (SSLSocket) socketFactory.createSocket();
-            socket.connect(new InetSocketAddress(daemonHost, daemonPort), 5000);
+            socket.connect(new InetSocketAddress(daemonHost, daemonPort), 10000);
             socket.setSoTimeout(0); // Бесконечный таймаут
 
             socket.startHandshake();

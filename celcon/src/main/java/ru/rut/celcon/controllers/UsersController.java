@@ -67,4 +67,21 @@ public class UsersController {
             return Map.of("code", 500, "answ", "Failed to add user: " + e.getMessage());
         }
     }
+    @PostMapping("/api/users/delete")
+    @ResponseBody
+    public Map<String, Object> deleteUser(
+            @RequestBody Map<String, Object> request,
+            HttpSession session) {
+        String sessionId = (String) session.getAttribute("daemonSessionId");
+        if (sessionId == null) {
+            return Map.of("code", 401, "answ", "Not authenticated");
+        }
+        try {
+            String id = (String) request.get("id");
+            netClient.deleteUser(sessionId, id);
+            return Map.of("code", 200, "answ", "ok");
+        }  catch (Exception e) {
+            return Map.of("code", 500, "answ", "Failed to delete user: " + e.getMessage());
+        }
+    }
 }

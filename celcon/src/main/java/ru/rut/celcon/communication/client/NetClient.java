@@ -1,6 +1,5 @@
 package ru.rut.celcon.communication.client;
 
-import org.springframework.web.socket.WebSocketSession;
 import ru.rut.celcon.entities.*;
 import ru.rut.celcon.services.WebSocketEventService;
 import tools.jackson.databind.ObjectMapper;
@@ -199,6 +198,23 @@ public class NetClient implements AutoCloseable {
                 "level", user.getRole(),
                 "login", user.getLogin(),
                 "token", user.getPassword()
+        );
+
+        executeCommand(command, response -> {
+            Integer code = (Integer) response.get("code");
+            if (code == null || code != 200) {
+                String msg = (String) response.getOrDefault("answ", "Unknown error");
+                throw new RuntimeException("ADD_FILES failed: " + msg);
+            }
+            return null;
+        });
+    }
+
+    public void deleteUser(String sessionId, String userId) {
+        Map<String, Object> command = Map.of(
+                "cmd", "DELETE_USER",
+                "session_id", sessionId,
+                "user_id", userId
         );
 
         executeCommand(command, response -> {

@@ -61,9 +61,29 @@ document.addEventListener('click', (e) => {
 function editUser(id) {
     alert('Редактирование пользователя ' + id + ' — заглушка');
 }
-function deleteUser(id) {
+async function deleteUser(id) {
     if (confirm('Удалить пользователя? Это действие нельзя отменить.')) {
-        alert('Удаление ' + id + ' — заглушка');
+        // alert('Удаление ' + id + ' — заглушка');
+        try {
+                const response = await fetch('/api/users/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({id})
+                });
+
+                const data = await response.json();
+
+                if (data.code === 200) {
+                    alert(`Пользователь будет удалён`);
+                    closeAddUserModal();
+                } else {
+                    alert(data.answ || 'Ошибка добавления пользователя');
+                }
+            } catch (err) {
+                alert('Ошибка сети или сервера: ' + err.message);
+            }
     }
 }
 

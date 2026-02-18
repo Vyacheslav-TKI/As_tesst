@@ -261,6 +261,24 @@ json CommunicationModule::process_add_user(const json& req) {
     return JsonProtocol::make_success();
 }
 
+json CommunicationModule::process_delete_user(const json& req) {
+    auto parsed = JsonProtocol::parse_delete_user(req);
+    if (!parsed) {
+        return JsonProtocol::make_error(400, "invalid DELETE_USER request");
+    }
+
+    // Только администратор (роль = 2)
+    if (!auth_manager_.validate_session(parsed->session_id, /*min_role=*/2)) {
+        return JsonProtocol::make_error(403, "only admin can delete users");
+    }
+
+    if (!user_dao_->delete_user(parsed->user_id)) {
+        return JsonProtocol::make_error(500, "failed to delete user");
+    }
+
+    return JsonProtocol::make_success();
+}
+
 void CommunicationModule::handle_incoming() {
     if (!client_connected_) {
         struct sockaddr_in client_addr;
@@ -345,6 +363,9 @@ void CommunicationModule::handle_command(const std::string& raw) {
         }
         else if (*cmd == "ADD_USER") {
             send_json(process_add_user(j));
+        }
+        else if (*cmd == "DELETE_USER") {
+            send_json(process_delete_user(j));
         }
         else if (*cmd == "SYNC") {
             send_json(process_sync(j));

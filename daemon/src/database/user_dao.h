@@ -13,6 +13,7 @@ private:
 public:
     explicit UserDAO(sqlite3* db);
 
+    bool delete_user(const std::string& user_id);
     std::optional<User> get_by_login(const std::string& login);
     bool add_user(const User& user);
     std::vector<User> get_all_users();

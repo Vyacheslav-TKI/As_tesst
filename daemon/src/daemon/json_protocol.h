@@ -50,6 +50,11 @@ struct ListUsersRequest {
     std::string session_id;
 };
 
+struct DeleteUserRequest {
+    std::string session_id;
+    std::string user_id;
+};
+
 struct LogoutRequest {
     std::string session_id;
 };
@@ -60,6 +65,7 @@ public:
     static std::optional<std::string> parse_command(const json& j);
     static std::optional<AuthRequest> parse_auth(const json& j);
     static std::optional<AddFilesRequest> parse_add_files(const json& j);
+    static std::optional<DeleteUserRequest> parse_delete_user(const json& j);
     static std::optional<ChangeFilesRequest> parse_change_files(const json& j);
     static std::optional<DeleteFilesRequest> parse_delete_files(const json& j);
     static std::optional<SyncRequest> parse_sync(const json& j);

@@ -50,6 +50,7 @@ private:
     nlohmann::json process_add_user(const nlohmann::json& req);
     nlohmann::json process_list_users(const nlohmann::json& req);
     nlohmann::json process_logout(const nlohmann::json& req);
+    nlohmann::json process_delete_user(const json& req);
     // ... другие команды
 
 public:

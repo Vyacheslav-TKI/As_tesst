@@ -58,6 +58,18 @@ bool UserDAO::add_user(const User& user) {
     return ok;
 }
 
+bool UserDAO::delete_user(const std::string& user_id) {
+    const char* sql = "DELETE FROM Users WHERE UserID = ?";
+    sqlite3_stmt* stmt;
+    if (sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr) != SQLITE_OK) return false;
+
+    sqlite3_bind_text(stmt, 1, user_id.c_str(), -1, SQLITE_STATIC);
+
+    bool ok = (sqlite3_step(stmt) == SQLITE_DONE);
+    sqlite3_finalize(stmt);
+    return ok;
+}
+
 bool UserDAO::login_exists(const std::string& login) {
     const char* sql = "SELECT 1 FROM Users WHERE UserLogin = ?";
     sqlite3_stmt* stmt;

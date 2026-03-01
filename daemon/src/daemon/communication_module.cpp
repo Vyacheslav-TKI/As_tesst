@@ -4,7 +4,7 @@
 #include "file_watcher.h"
 #include "auth_manager.h"
 #include "json_protocol.h"
-#include <nlohmann/json.hpp>
+#include "../common/json.hpp"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>

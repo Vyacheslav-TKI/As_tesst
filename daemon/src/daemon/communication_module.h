@@ -10,7 +10,7 @@
 #include <vector>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
-#include <nlohmann/json.hpp>
+#include "../common/json.hpp"
 #include <thread>
 #include <atomic>
 

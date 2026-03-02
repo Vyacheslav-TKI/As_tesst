@@ -118,6 +118,15 @@ json JsonProtocol::make_file_changed_event(int file_id, const std::string& path,
     };
 }
 
+json JsonProtocol::make_file_unchanged_event(int file_id, const std::string& path, const std::string& new_hash) {
+    return json{
+        {"event", "FILE_UNCHANGED"},
+        {"id", file_id},
+        {"path", path},
+        {"hash", new_hash}
+    };
+}
+
 json JsonProtocol::make_session_expired_event(const std::string& session_id) {
     return json{
         {"event", "SESSION_EXPIRED"},

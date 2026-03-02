@@ -83,5 +83,6 @@ public:
 
     // === Формирование событий (push от демона) ===
     static json make_file_changed_event(int file_id, const std::string& path, const std::string& new_hash);
+    static json make_file_unchanged_event(int file_id, const std::string& path, const std::string& new_hash);
     static json make_session_expired_event(const std::string& session_id);
 };

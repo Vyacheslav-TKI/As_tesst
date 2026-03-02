@@ -39,14 +39,19 @@ int CommunicationModule::get_client_fd() const {
 void CommunicationModule::background_integrity_worker(std::vector<MonitoredFile> files) {
     for (const auto& file : files) {
         std::string current_hash = hasher_->compute_hash(file.path, file.algorithm);
+        json event;
         if (current_hash != file.baseline_hash) {
             // Файл изменён — отправляем событие
-            json event = JsonProtocol::make_file_changed_event(
+            event = JsonProtocol::make_file_changed_event(
                 file.file_id, file.path, current_hash
             );
-            // Отправка через TLS — НЕБЛОКИРУЮЩАЯ
-            send_json(event);
+        } else {
+            event = JsonProtocol::make_file_unchanged_event(
+                file.file_id, file.path, current_hash
+            );
         }
+        // Отправка через TLS — НЕБЛОКИРУЮЩАЯ
+        send_json(event);
     }
     background_check_active_ = false;
 }

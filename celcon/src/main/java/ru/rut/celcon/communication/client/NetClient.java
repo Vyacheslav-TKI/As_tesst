@@ -119,6 +119,7 @@ public class NetClient implements AutoCloseable {
 
             switch (eventId) {
                 case "FILE_CHANGED":
+                case "FILE_UNCHANGED":
                 case "SESSION_EXPIRED":
                     try {
                         webSocketEventService.sendEventToBrowser(event);

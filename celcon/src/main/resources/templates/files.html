@@ -50,9 +50,10 @@
           <div class="file-path" th:text="${file.path}">/path/to/placeholder</div>
         </div>
           <div class="file-controls">
-              <div class="status-badge" th:classappend="${file.changed} ? 'changed' : 'unchanged'"
-                   th:text="${file.changed} ? 'ИЗМЕНЁН' : 'НЕ ИЗМЕНЁН'"
-                   th:attr="data-status=${file.changed} ? 'changed' : 'unchanged'">
+              <div class="status-badge"
+                   th:classappend="${file.changed == null} ? 'pending' : (${file.changed} ? 'changed' : 'unchanged')"
+                   th:text="${file.changed == null} ? 'ПРОВЕРЯЕТСЯ' : (${file.changed} ? 'ИЗМЕНЁН' : 'НЕ ИЗМЕНЁН')"
+                   th:attr="data-status=${file.changed == null} ? 'pending' : (${file.changed} ? 'changed' : 'unchanged')">
               </div>
             <button class="menu-btn" th:if="${hasEditRights}">⋮</button>
 

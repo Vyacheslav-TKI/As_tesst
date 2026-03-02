@@ -19,10 +19,17 @@ function connectWebSocket() {
             if (msg.event === "FILE_CHANGED") {
                 console.log('File changed event:', msg);
                 if (msg.id) {
-                    updateFileStatus(msg.id, true);
+                    updateFileStatus(msg.id, "changed");
                     //alert(`Файл изменён: ${msg.path}`);
                 }
-            } else if (msg.event === "SESSION_EXPIRED") {
+            } else if (msg.event === "FILE_UNCHANGED") {
+                console.log('File changed event:', msg);
+                if (msg.id) {
+                    updateFileStatus(msg.id, "unchanged");
+                    //alert(`Файл изменён: ${msg.path}`);
+                }
+            }
+            else if (msg.event === "SESSION_EXPIRED") {
                 alert("Сессия истекла");
                 window.location.href = "/auth";
             }
@@ -292,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 });
 
-function updateFileStatus(fileId, isChanged) {
+function updateFileStatus(fileId, changed) {
     // Используем шаблонную строку с обратными кавычками
     const fileItem = document.querySelector(`[data-file-id="${fileId}"]`);
     if (!fileItem) {
@@ -302,14 +309,21 @@ function updateFileStatus(fileId, isChanged) {
 
     const statusBadge = fileItem.querySelector('.status-badge');
     if (statusBadge) {
-        if (isChanged) {
+        switch (changed) {
+        case "changed":
             statusBadge.className = 'status-badge changed';
             statusBadge.textContent = 'ИЗМЕНЁН';
             statusBadge.setAttribute('data-status', 'changed');
-        } else {
+            break;
+        case "unchanged":
             statusBadge.className = 'status-badge unchanged';
             statusBadge.textContent = 'НЕ ИЗМЕНЁН';
             statusBadge.setAttribute('data-status', 'unchanged');
+            break;
+        default:
+            statusBadge.className = 'status-badge pending';
+            statusBadge.textContent = 'ПОДОЖДИТЕ...';
+            statusBadge.setAttribute('data-status', 'pending');
         }
     } else {
         console.warn("Элемент .status-badge не найден для файла с id=" + fileId);

@@ -219,6 +219,7 @@
 
     .status-badge.changed { background-color: #F44336; }
     .status-badge.unchanged { background-color: #4CAF50; }
+    .status-badge.pending { background-color: #808080; }
     .status-badge.level_1 { background-color: #1E90FF; }
     .status-badge.level_2 { background-color: #4CAF50; }
     .status-badge.admin { background-color: #F44336; }

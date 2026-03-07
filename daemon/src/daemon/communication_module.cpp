@@ -12,6 +12,7 @@
 #include <fcntl.h>
 #include <syslog.h>
 #include <cstring>
+#include <set>
 
 using json = nlohmann::json;
 
@@ -230,6 +231,52 @@ json CommunicationModule::process_list_users(const json& req) {
     };;
 }
 
+json CommunicationModule::process_stat(const json& req) {
+    auto parsed = JsonProtocol::parse_stat(req);
+    if (!parsed) {
+        return JsonProtocol::make_error(400, "invalid STAT request");
+    }
+
+    if (!auth_manager_.validate_session(parsed->session_id, /*min_role=*/2)) {
+        return JsonProtocol::make_error(403, "only users since level 2 can list users");
+    }
+
+    auto user_opt = auth_manager_.get_user_by_session(parsed->session_id);
+    if (!user_opt) {
+        return JsonProtocol::make_error(401, "session expired");
+    }
+
+
+    std::vector<ChangeRecord> changes = history_dao_->get_by_time_range(parsed->date_begin, parsed->date_end);
+
+    std::set<int> file_ids;
+    for (const auto& change : changes) {
+        file_ids.insert(change.file_id);
+    }
+
+    auto files_map = file_dao_->get_files_by_ids_for_user(file_ids, user_opt->id);
+
+    json stat_array = json::array();
+    for (const ChangeRecord& change : changes) {
+        auto it = files_map.find(change.file_id);
+        if (it != files_map.end()) {
+            stat_array.push_back({
+                {"change_id", change.change_id},
+                {"file_id", change.file_id},
+                {"file_path", it->second},
+                {"old_hash", change.old_hash},
+                {"new_hash", change.new_hash},
+                {"timestamp", change.timestamp}
+            });
+        }
+    }
+    return json{
+        {"code", 200},
+        {"answ", "ok"},
+        {"changes", stat_array}
+    };
+}
+
 json CommunicationModule::process_add_user(const json& req) {
     auto parsed = JsonProtocol::parse_add_user(req);
     if (!parsed) {
@@ -385,6 +432,9 @@ void CommunicationModule::handle_command(const std::string& raw) {
         }
         else if (*cmd == "LIST_USERS") {
             send_json(process_list_users(j));
+        }
+        else if (*cmd == "STAT") {
+            send_json(process_stat(j));
         }
         else if (*cmd == "LOGOUT") {
             send_json(process_logout(j));

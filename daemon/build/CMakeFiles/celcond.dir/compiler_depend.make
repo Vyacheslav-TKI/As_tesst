@@ -478,16 +478,20 @@ CMakeFiles/celcond.dir/src/daemon/celcon_daemon.cpp.o: /home/user/Загрузк
   /usr/include/c++/12/ctime \
   /home/user/Загрузки/celcon/As_tesst/daemon/src/database/user_dao.h \
   /home/user/Загрузки/celcon/As_tesst/daemon/src/database/monitored_file_dao.h \
-  /home/user/Загрузки/celcon/As_tesst/daemon/src/database/change_history_dao.h \
-  /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/communication_module.h \
-  /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/monitored_file.h \
-  /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/auth_manager.h \
   /usr/include/c++/12/unordered_map \
   /usr/include/c++/12/bits/hashtable.h \
   /usr/include/c++/12/bits/hashtable_policy.h \
   /usr/include/c++/12/bits/node_handle.h \
   /usr/include/c++/12/bits/unordered_map.h \
   /usr/include/c++/12/bits/erase_if.h \
+  /usr/include/c++/12/set \
+  /usr/include/c++/12/bits/stl_tree.h \
+  /usr/include/c++/12/bits/stl_set.h \
+  /usr/include/c++/12/bits/stl_multiset.h \
+  /home/user/Загрузки/celcon/As_tesst/daemon/src/database/change_history_dao.h \
+  /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/communication_module.h \
+  /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/monitored_file.h \
+  /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/auth_manager.h \
   /usr/include/c++/12/chrono \
   /usr/include/c++/12/bits/chrono.h \
   /usr/include/c++/12/ratio \
@@ -604,7 +608,6 @@ CMakeFiles/celcond.dir/src/daemon/celcon_daemon.cpp.o: /home/user/Загрузк
   /usr/include/c++/12/bits/forward_list.h \
   /usr/include/c++/12/bits/forward_list.tcc \
   /usr/include/c++/12/map \
-  /usr/include/c++/12/bits/stl_tree.h \
   /usr/include/c++/12/bits/stl_map.h \
   /usr/include/c++/12/bits/stl_multimap.h \
   /usr/include/c++/12/valarray \
@@ -955,6 +958,10 @@ CMakeFiles/celcond.dir/src/daemon/communication_module.cpp.o: /home/user/Заг�
   /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/integrity_checker.h \
   /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/hash_algorithm.h \
   /home/user/Загрузки/celcon/As_tesst/daemon/src/database/monitored_file_dao.h \
+  /usr/include/c++/12/set \
+  /usr/include/c++/12/bits/stl_tree.h \
+  /usr/include/c++/12/bits/stl_set.h \
+  /usr/include/c++/12/bits/stl_multiset.h \
   /home/user/Загрузки/celcon/As_tesst/daemon/src/database/change_history_dao.h \
   /usr/include/openssl/ssl.h \
   /usr/include/openssl/macros.h \
@@ -1063,7 +1070,6 @@ CMakeFiles/celcond.dir/src/daemon/communication_module.cpp.o: /home/user/Заг�
   /usr/include/c++/12/bits/forward_list.h \
   /usr/include/c++/12/bits/forward_list.tcc \
   /usr/include/c++/12/map \
-  /usr/include/c++/12/bits/stl_tree.h \
   /usr/include/c++/12/bits/stl_map.h \
   /usr/include/c++/12/bits/stl_multimap.h \
   /usr/include/c++/12/valarray \
@@ -2583,6 +2589,16 @@ CMakeFiles/celcond.dir/src/database/database.cpp.o: /home/user/Загрузки/
   /usr/include/c++/12/bits/enable_special_members.h \
   /usr/include/c++/12/ctime \
   /home/user/Загрузки/celcon/As_tesst/daemon/src/database/monitored_file_dao.h \
+  /usr/include/c++/12/unordered_map \
+  /usr/include/c++/12/bits/hashtable.h \
+  /usr/include/c++/12/bits/hashtable_policy.h \
+  /usr/include/c++/12/bits/node_handle.h \
+  /usr/include/c++/12/bits/unordered_map.h \
+  /usr/include/c++/12/bits/erase_if.h \
+  /usr/include/c++/12/set \
+  /usr/include/c++/12/bits/stl_tree.h \
+  /usr/include/c++/12/bits/stl_set.h \
+  /usr/include/c++/12/bits/stl_multiset.h \
   /usr/include/syslog.h \
   /usr/include/x86_64-linux-gnu/sys/syslog.h \
   /usr/include/x86_64-linux-gnu/bits/syslog-path.h \
@@ -2791,6 +2807,19 @@ CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.o: /home/user/Заг�
   /usr/include/x86_64-linux-gnu/bits/types/struct_tm.h \
   /usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h \
   /usr/include/sqlite3.h \
+  /usr/include/c++/12/unordered_map \
+  /usr/include/c++/12/ext/aligned_buffer.h \
+  /usr/include/c++/12/bits/hashtable.h \
+  /usr/include/c++/12/bits/hashtable_policy.h \
+  /usr/include/c++/12/tuple \
+  /usr/include/c++/12/bits/uses_allocator.h \
+  /usr/include/c++/12/bits/node_handle.h \
+  /usr/include/c++/12/bits/unordered_map.h \
+  /usr/include/c++/12/bits/erase_if.h \
+  /usr/include/c++/12/set \
+  /usr/include/c++/12/bits/stl_tree.h \
+  /usr/include/c++/12/bits/stl_set.h \
+  /usr/include/c++/12/bits/stl_multiset.h \
   /usr/include/syslog.h \
   /usr/include/x86_64-linux-gnu/sys/syslog.h \
   /usr/include/x86_64-linux-gnu/bits/syslog-path.h
@@ -3153,6 +3182,16 @@ CMakeFiles/celcond.dir/src/main.cpp.o: /home/user/Загрузки/celcon/As_tes
   /usr/include/c++/12/ctime \
   /home/user/Загрузки/celcon/As_tesst/daemon/src/database/user_dao.h \
   /home/user/Загрузки/celcon/As_tesst/daemon/src/database/monitored_file_dao.h \
+  /usr/include/c++/12/unordered_map \
+  /usr/include/c++/12/bits/hashtable.h \
+  /usr/include/c++/12/bits/hashtable_policy.h \
+  /usr/include/c++/12/bits/node_handle.h \
+  /usr/include/c++/12/bits/unordered_map.h \
+  /usr/include/c++/12/bits/erase_if.h \
+  /usr/include/c++/12/set \
+  /usr/include/c++/12/bits/stl_tree.h \
+  /usr/include/c++/12/bits/stl_set.h \
+  /usr/include/c++/12/bits/stl_multiset.h \
   /home/user/Загрузки/celcon/As_tesst/daemon/src/database/change_history_dao.h
 
 
@@ -3263,8 +3302,6 @@ CMakeFiles/celcond.dir/src/main.cpp.o: /home/user/Загрузки/celcon/As_tes
 /usr/include/c++/12/valarray:
 
 /usr/include/c++/12/bits/stl_map.h:
-
-/usr/include/c++/12/bits/stl_tree.h:
 
 /usr/include/c++/12/bits/stl_relops.h:
 
@@ -3416,6 +3453,10 @@ CMakeFiles/celcond.dir/src/main.cpp.o: /home/user/Загрузки/celcon/As_tes
 
 /home/user/Загрузки/celcon/As_tesst/daemon/src/database/change_history_dao.h:
 
+/usr/include/c++/12/bits/stl_multiset.h:
+
+/usr/include/c++/12/bits/stl_tree.h:
+
 /home/user/Загрузки/celcon/As_tesst/daemon/src/database/monitored_file_dao.h:
 
 /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/celcon_daemon.h:
@@ -3483,6 +3524,8 @@ CMakeFiles/celcond.dir/src/main.cpp.o: /home/user/Загрузки/celcon/As_tes
 /usr/include/x86_64-linux-gnu/sys/select.h:
 
 /usr/include/c++/12/bits/range_access.h:
+
+/usr/include/c++/12/bits/stl_set.h:
 
 /usr/include/c++/12/bits/functexcept.h:
 
@@ -4139,6 +4182,8 @@ CMakeFiles/celcond.dir/src/main.cpp.o: /home/user/Загрузки/celcon/As_tes
 /usr/include/c++/12/bits/stream_iterator.h:
 
 /usr/include/c++/12/ios:
+
+/usr/include/c++/12/set:
 
 /usr/include/c++/12/bits/ios_base.h:
 

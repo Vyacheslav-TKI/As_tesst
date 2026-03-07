@@ -65,6 +65,22 @@ std::optional<AddUserRequest> JsonProtocol::parse_add_user(const json& j) {
     };
 }
 
+std::optional<StatRequest> JsonProtocol::parse_stat(const json& j) {
+    if (!j.contains("session_id") || !j.contains("date") || !j["date"].is_object())
+        return std::nullopt;
+
+    const auto &date_obj = j["date"];
+
+    if (!date_obj.contains("date_begin") || !date_obj.contains("date_end"))
+        return std::nullopt;
+
+    return StatRequest{
+        .session_id = j["session_id"],
+        .date_begin = date_obj["date_begin"],
+        .date_end = date_obj["date_end"]
+    };
+}
+
 std::optional<DeleteUserRequest> JsonProtocol::parse_delete_user(const json& j) {
     if (!j.contains("session_id") || !j.contains("user_id"))
         return std::nullopt;

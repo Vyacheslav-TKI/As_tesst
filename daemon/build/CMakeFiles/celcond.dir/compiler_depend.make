@@ -955,6 +955,7 @@ CMakeFiles/celcond.dir/src/daemon/communication_module.cpp.o: /home/user/Заг�
   /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/integrity_checker.h \
   /home/user/Загрузки/celcon/As_tesst/daemon/src/daemon/hash_algorithm.h \
   /home/user/Загрузки/celcon/As_tesst/daemon/src/database/monitored_file_dao.h \
+  /home/user/Загрузки/celcon/As_tesst/daemon/src/database/change_history_dao.h \
   /usr/include/openssl/ssl.h \
   /usr/include/openssl/macros.h \
   /usr/include/x86_64-linux-gnu/openssl/opensslconf.h \

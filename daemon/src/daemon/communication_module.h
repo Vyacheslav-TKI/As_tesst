@@ -5,6 +5,7 @@
 #include "integrity_checker.h"
 #include "../database/user_dao.h"
 #include "../database/monitored_file_dao.h"
+#include "../database/change_history_dao.h"
 #include <string>
 #include <memory>
 #include <vector>
@@ -32,6 +33,7 @@ private:
     IntegrityChecker* hasher_;
     UserDAO* user_dao_;
     MonitoredFileDAO* file_dao_;
+    ChangeHistoryDAO* history_dao_;
 
     std::string recv_buffer_;
 
@@ -59,6 +61,7 @@ public:
         IntegrityChecker* hasher,
         UserDAO* user_dao,
         MonitoredFileDAO* file_dao,
+        ChangeHistoryDAO* history_dao,
         File_watcher& watcher
     );
 

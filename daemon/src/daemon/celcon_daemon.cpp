@@ -27,6 +27,7 @@ Celcon_daemon::Celcon_daemon()
           hasher_.get(),
           user_dao_.get(),
           file_dao_.get(),
+          history_dao_.get(),
           *watcher_
       ))
 {

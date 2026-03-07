@@ -77,8 +77,12 @@ void File_watcher::process_inotify_events() {
 }
 
 void File_watcher::on_file_changed(int file_id, const std::string& new_hash) {
-   /* // 1. Логируем событие
-    history_dao_->log_change(file_id);
+    /*ChangeRecord rec;
+    rec.file_id = file_id;
+    rec.old_hash = old_hash;
+    rec.new_hash = new_hash;
+    // 1. Логируем событие
+    history_dao_->log_change(rec);
 
     // 2. Получаем путь файла (из кэша или БД)
     std::string path = get_path_by_file_id(file_id); // реализуй через FileDAO или кэш

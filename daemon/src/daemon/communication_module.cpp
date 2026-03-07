@@ -1,5 +1,6 @@
 #include "communication_module.h"
 #include "../database/database.h"
+#include "../database/entities.h"
 #include "utils.h"
 #include "file_watcher.h"
 #include "auth_manager.h"
@@ -19,11 +20,13 @@ CommunicationModule::CommunicationModule(
     IntegrityChecker* hasher,
     UserDAO* user_dao,
     MonitoredFileDAO* file_dao,
+    ChangeHistoryDAO* history_dao,
     File_watcher& watcher
 )
     : hasher_(hasher)
     , user_dao_(user_dao)
     , file_dao_(file_dao)
+    , history_dao_(history_dao)
     , watcher_(watcher)
     , db_(db)
     , auth_manager_(user_dao)
@@ -50,6 +53,11 @@ void CommunicationModule::background_integrity_worker(std::vector<MonitoredFile>
                 file.file_id, file.path, current_hash
             );
         }
+        ChangeRecord rec;
+        rec.file_id = file.file_id;
+        rec.old_hash = file.baseline_hash;
+        rec.new_hash = current_hash;
+        history_dao_->log_change(rec);
         // Отправка через TLS — НЕБЛОКИРУЮЩАЯ
         send_json(event);
     }

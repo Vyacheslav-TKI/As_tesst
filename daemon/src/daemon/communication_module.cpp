@@ -56,7 +56,6 @@ void CommunicationModule::background_integrity_worker(std::vector<MonitoredFile>
         }
         ChangeRecord rec;
         rec.file_id = file.file_id;
-        rec.old_hash = file.baseline_hash;
         rec.new_hash = current_hash;
         history_dao_->log_change(rec);
         // Отправка через TLS — НЕБЛОКИРУЮЩАЯ
@@ -260,11 +259,13 @@ json CommunicationModule::process_stat(const json& req) {
     for (const ChangeRecord& change : changes) {
         auto it = files_map.find(change.file_id);
         if (it != files_map.end()) {
+            MonitoredFile file = it->second;
             stat_array.push_back({
                 {"change_id", change.change_id},
                 {"file_id", change.file_id},
-                {"file_path", it->second},
-                {"old_hash", change.old_hash},
+                {"file_path", file.path},
+                {"alg", file.algorithm},
+                {"baseline_hash", file.baseline_hash},
                 {"new_hash", change.new_hash},
                 {"timestamp", change.timestamp}
             });

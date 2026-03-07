@@ -133,10 +133,10 @@ std::optional<MonitoredFile> MonitoredFileDAO::get_by_id(int file_id) {
     return f;
 }
 
-std::unordered_map<int, std::string> MonitoredFileDAO::get_files_by_ids_for_user(
+std::unordered_map<int, MonitoredFile> MonitoredFileDAO::get_files_by_ids_for_user(
     const std::set<int>& file_ids, int user_id) {
 
-    std::unordered_map<int, std::string> result;
+    std::unordered_map<int, MonitoredFile> result;
 
     if (file_ids.empty()) {
         return result;
@@ -144,7 +144,7 @@ std::unordered_map<int, std::string> MonitoredFileDAO::get_files_by_ids_for_user
 
     // Строим SQL с плейсхолдерами для всех ID
     std::string sql =
-        "SELECT FileID, FilePath, ForUsers "
+        "SELECT FileID, FilePath, ForUsers, HashAlgorithm, Hash "
         "FROM MonitoredFiles "
         "WHERE FileID IN (";
 
@@ -173,10 +173,17 @@ std::unordered_map<int, std::string> MonitoredFileDAO::get_files_by_ids_for_user
 
     // Получаем результаты
     while (sqlite3_step(stmt) == SQLITE_ROW) {
-        int file_id = sqlite3_column_int(stmt, 0);
-        if (sqlite3_column_text(stmt, 1)) {
-            result[file_id] = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
-        }
+        MonitoredFile f;
+        f.file_id = sqlite3_column_int(stmt, 0);
+        if (sqlite3_column_text(stmt, 1))
+            f.path = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+        if (sqlite3_column_text(stmt, 2))
+            f.for_users = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+        f.algorithm = sqlite3_column_int(stmt, 3);
+        if (sqlite3_column_text(stmt, 4))
+            f.baseline_hash = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
+
+        result[f.file_id] = f;
     }
 
     sqlite3_finalize(stmt);

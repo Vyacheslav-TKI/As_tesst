@@ -2,19 +2,18 @@
 #include "change_history_dao.h"
 
 bool ChangeHistoryDAO::log_change(const ChangeRecord &change) {
-    const char* sql = "INSERT OR IGNORE INTO ChangeHistory (FileID, OldHash, NewHash, Time) VALUES (?, ?, ?,  strftime('%s', 'now'))";
+    const char* sql = "INSERT OR IGNORE INTO ChangeHistory (FileID, NewHash, Time) VALUES (?, ?, ?,  strftime('%s', 'now'))";
     sqlite3_stmt* stmt;
     if (sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr) != SQLITE_OK) return false;
     sqlite3_bind_int(stmt, 1, change.file_id);
-    sqlite3_bind_text(stmt, 2, change.old_hash.c_str(), -1, SQLITE_STATIC);
-    sqlite3_bind_text(stmt, 3, change.new_hash.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 2, change.new_hash.c_str(), -1, SQLITE_STATIC);
     bool ok = (sqlite3_step(stmt) == SQLITE_DONE);
     sqlite3_finalize(stmt);
     return ok;
 }
 
 std::vector<ChangeRecord> ChangeHistoryDAO::get_by_file_id(int file_id) {
-    const char *sql = "SELECT ChangeID, FileID, OldHash, NewHash, Time From ChangeHistory WHERE FileID = ?";
+    const char *sql = "SELECT ChangeID, FileID, NewHash, Time From ChangeHistory WHERE FileID = ?";
     sqlite3_stmt *stmt;
     if (sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr) != SQLITE_OK) {
         return {};
@@ -25,15 +24,14 @@ std::vector<ChangeRecord> ChangeHistoryDAO::get_by_file_id(int file_id) {
         ChangeRecord rec;
         rec.change_id = sqlite3_column_int(stmt, 0);
         rec.file_id = sqlite3_column_int(stmt, 1);
-        rec.old_hash = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
-        rec.new_hash = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
-        rec.timestamp = sqlite3_column_int64(stmt, 4);
+        rec.new_hash = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+        rec.timestamp = sqlite3_column_int64(stmt, 3);
     }
     sqlite3_finalize(stmt);
     return result;
 }
 std::vector<ChangeRecord> ChangeHistoryDAO::get_by_time_range(time_t begin, time_t end) {
-    const char *sql = "SELECT ChangeID, FileID, OldHash, NewHash, Time "
+    const char *sql = "SELECT ChangeID, FileID, NewHash, Time "
                       "FROM ChangeHistory "
                       "WHERE Time BETWEEN ? AND ? "
                       "ORDER BY Time";
@@ -66,17 +64,13 @@ std::vector<ChangeRecord> ChangeHistoryDAO::get_by_time_range(time_t begin, time
         rec.file_id = sqlite3_column_int(stmt, 1);
 
         // Безопасное получение текстовых полей
-        const char* old_hash_text = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
-        if (old_hash_text) {
-            rec.old_hash = old_hash_text;
-        }
 
-        const char* new_hash_text = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
+        const char* new_hash_text = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
         if (new_hash_text) {
             rec.new_hash = new_hash_text;
         }
 
-        rec.timestamp = sqlite3_column_int64(stmt, 4);
+        rec.timestamp = sqlite3_column_int64(stmt, 3);
 
         result.push_back(rec);
     }
@@ -93,7 +87,7 @@ std::vector<ChangeRecord> ChangeHistoryDAO::get_by_time_range(time_t begin, time
 }
 // Получить изменения для конкретного файла за период
 std::vector<ChangeRecord> ChangeHistoryDAO::get_by_file_and_time_range(int file_id, time_t begin, time_t end) {
-    const char *sql = "SELECT ChangeID, FileID, OldHash, NewHash, Time "
+    const char *sql = "SELECT ChangeID, FileID, NewHash, Time "
                       "FROM ChangeHistory "
                       "WHERE FileID = ? AND Time BETWEEN ? AND ? "
                       "ORDER BY Time";
@@ -112,9 +106,8 @@ std::vector<ChangeRecord> ChangeHistoryDAO::get_by_file_and_time_range(int file_
         ChangeRecord rec;
         rec.change_id = sqlite3_column_int(stmt, 0);
         rec.file_id = sqlite3_column_int(stmt, 1);
-        rec.old_hash = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
-        rec.new_hash = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
-        rec.timestamp = sqlite3_column_int64(stmt, 4);
+        rec.new_hash = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+        rec.timestamp = sqlite3_column_int64(stmt, 3);
         result.push_back(rec);
     }
 
@@ -124,7 +117,7 @@ std::vector<ChangeRecord> ChangeHistoryDAO::get_by_file_and_time_range(int file_
 
 // Получить последние N изменений
 std::vector<ChangeRecord> ChangeHistoryDAO::get_last_changes(int limit) {
-    const char *sql = "SELECT ChangeID, FileID, OldHash, NewHash, Time "
+    const char *sql = "SELECT ChangeID, FileID, NewHash, Time "
                       "FROM ChangeHistory "
                       "ORDER BY Time DESC "
                       "LIMIT ?";
@@ -141,9 +134,8 @@ std::vector<ChangeRecord> ChangeHistoryDAO::get_last_changes(int limit) {
         ChangeRecord rec;
         rec.change_id = sqlite3_column_int(stmt, 0);
         rec.file_id = sqlite3_column_int(stmt, 1);
-        rec.old_hash = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
-        rec.new_hash = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
-        rec.timestamp = sqlite3_column_int64(stmt, 4);
+        rec.new_hash = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+        rec.timestamp = sqlite3_column_int64(stmt, 3);
         result.push_back(rec);
     }
 

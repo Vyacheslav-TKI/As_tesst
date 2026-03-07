@@ -24,7 +24,6 @@ struct MonitoredFile {
 struct ChangeRecord {
     int change_id = -1;
     int file_id = -1;
-    std::string old_hash;
     std::string new_hash;
     time_t timestamp = 0;
 };

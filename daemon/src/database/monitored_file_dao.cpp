@@ -138,17 +138,15 @@ std::unordered_map<int, MonitoredFile> MonitoredFileDAO::get_files_by_ids_for_us
 
     std::unordered_map<int, MonitoredFile> result;
 
-    if (file_ids.empty()) {
+    if (file_ids.empty() || file_ids.size() > SQLITE_LIMIT_VARIABLE_NUMBER - 1) { // -1 для паттерна
         return result;
     }
 
-    // Строим SQL с плейсхолдерами для всех ID
-    std::string sql =
-        "SELECT FileID, FilePath, ForUsers, HashAlgorithm, Hash "
-        "FROM MonitoredFiles "
-        "WHERE FileID IN (";
+    // Строим SQL
+    std::string sql = "SELECT FileID, FilePath, ForUsers, HashAlgorithm, Hash "
+                      "FROM MonitoredFiles "
+                      "WHERE FileID IN (";
 
-    // Добавляем плейсхолдеры для каждого ID
     for (size_t i = 0; i < file_ids.size(); ++i) {
         if (i > 0) sql += ",";
         sql += "?";
@@ -156,34 +154,46 @@ std::unordered_map<int, MonitoredFile> MonitoredFileDAO::get_files_by_ids_for_us
 
     sql += ") AND (ForUsers = '0' OR ForUsers LIKE ?)";
 
-    sqlite3_stmt* stmt;
+    sqlite3_stmt* stmt = nullptr;
     if (sqlite3_prepare_v2(db_, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        // LOG_ERROR("Failed to prepare statement: ", sqlite3_errmsg(db_));
+        syslog(LOG_ERR, "Failed to prepare statement in get_files_by_ids_for_user: %s",
+           sqlite3_errmsg(db_));
         return result;
     }
 
-    // Биндим все file_id
+    // Биндим file_id (индексация с 1)
     int index = 1;
     for (int file_id : file_ids) {
-        sqlite3_bind_int(stmt, index++, file_id);
+        if (sqlite3_bind_int(stmt, index++, file_id) != SQLITE_OK) {
+            sqlite3_finalize(stmt);
+            return result;
+        }
     }
 
-    // Биндим паттерн для ForUsers
+    // Биндим паттерн
     std::string pattern = "%," + std::to_string(user_id) + ",%";
-    sqlite3_bind_text(stmt, index, pattern.c_str(), -1, SQLITE_TRANSIENT);
+    if (sqlite3_bind_text(stmt, index, pattern.c_str(), -1, SQLITE_TRANSIENT) != SQLITE_OK) {
+        sqlite3_finalize(stmt);
+        return result;
+    }
 
     // Получаем результаты
     while (sqlite3_step(stmt) == SQLITE_ROW) {
         MonitoredFile f;
         f.file_id = sqlite3_column_int(stmt, 0);
-        if (sqlite3_column_text(stmt, 1))
-            f.path = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
-        if (sqlite3_column_text(stmt, 2))
-            f.for_users = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
-        f.algorithm = sqlite3_column_int(stmt, 3);
-        if (sqlite3_column_text(stmt, 4))
-            f.baseline_hash = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
 
-        result[f.file_id] = f;
+        if (auto text = sqlite3_column_text(stmt, 1))
+            f.path = reinterpret_cast<const char*>(text);
+        if (auto text = sqlite3_column_text(stmt, 2))
+            f.for_users = reinterpret_cast<const char*>(text);
+
+        f.algorithm = sqlite3_column_int(stmt, 3);
+
+        if (auto text = sqlite3_column_text(stmt, 4))
+            f.baseline_hash = reinterpret_cast<const char*>(text);
+
+        result[f.file_id] = std::move(f);
     }
 
     sqlite3_finalize(stmt);

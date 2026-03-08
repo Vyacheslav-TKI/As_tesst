@@ -1,8 +1,9 @@
 // change_history_dao.cpp
 #include "change_history_dao.h"
+#include <syslog.h>
 
 bool ChangeHistoryDAO::log_change(const ChangeRecord &change) {
-    const char* sql = "INSERT OR IGNORE INTO ChangeHistory (FileID, NewHash, Time) VALUES (?, ?, ?,  strftime('%s', 'now'))";
+    const char* sql = "INSERT OR IGNORE INTO ChangeHistory (FileID, NewHash, Time) VALUES (?, ?, strftime('%s', 'now'))";
     sqlite3_stmt* stmt;
     if (sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr) != SQLITE_OK) return false;
     sqlite3_bind_int(stmt, 1, change.file_id);
@@ -41,6 +42,8 @@ std::vector<ChangeRecord> ChangeHistoryDAO::get_by_time_range(time_t begin, time
     if (rc != SQLITE_OK) {
         // Можно добавить логирование ошибки
         // fprintf(stderr, "SQL error: %s\n", sqlite3_errmsg(db_));
+        syslog(LOG_ERR, "Failed to prepare statement in get_by_time_range: %s",
+           sqlite3_errmsg(db_));
         return {};
     }
 

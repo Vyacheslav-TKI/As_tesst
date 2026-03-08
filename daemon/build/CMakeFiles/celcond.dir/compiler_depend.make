@@ -2395,7 +2395,10 @@ CMakeFiles/celcond.dir/src/database/change_history_dao.cpp.o: /home/user/Заг�
   /usr/include/x86_64-linux-gnu/bits/timex.h \
   /usr/include/x86_64-linux-gnu/bits/types/struct_tm.h \
   /usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h \
-  /usr/include/sqlite3.h
+  /usr/include/sqlite3.h \
+  /usr/include/syslog.h \
+  /usr/include/x86_64-linux-gnu/sys/syslog.h \
+  /usr/include/x86_64-linux-gnu/bits/syslog-path.h
 
 CMakeFiles/celcond.dir/src/database/database.cpp.o: /home/user/Загрузки/celcon/As_tesst/daemon/src/database/database.cpp \
   /usr/include/stdc-predef.h \

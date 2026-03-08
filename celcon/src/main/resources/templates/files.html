@@ -39,8 +39,6 @@
 </div>
 
 <div class="container">
-  <!-- Вкладка: Файлы -->
-  <div class="tab-content active" id="files-tab">
     <h2>Список отслеживания</h2>
     <br>
     <div class="file-list">
@@ -66,49 +64,6 @@
       </div>
       <button class="add-file-btn" onclick="openAddFileModal()">+ Добавить файл(ы)</button>
   </div>
-  </div>
-
-  <!-- Вкладка: Статистика -->
-  <div class="tab-content" id="stats-tab">
-    <div class="stat-controls">
-      <label>
-        С:
-        <input type="date" id="date-from" value="2025-11-10">
-      </label>
-      <label>
-        По:
-        <input type="date" id="date-to" value="2025-11-20">
-      </label>
-      <button onclick="updateChart()">Применить</button>
-    </div>
-    <canvas id="statsChart"></canvas>
-  </div>
-    <div class="tab-content" id="users-tab" th:if="${isAdmin}">
-        <h2>Пользователи</h2>
-        <br>
-        <div class="user-list">
-            <div class="user-item" th:each="user : ${users}">
-                <div class="user-info">
-                    <div class="user-fio" th:text="${user.fio}">FIO</div>
-                    <div class="file-post" th:text="${user.path}">post</div>
-                </div>
-                <div class="user-controls">
-                    <!-- Только для пользователя уровня 1 или админа -->
-                    <div th:if="${user.role == 2}" class="status-badge admin">Админ</div>
-                    <div th:if="${user.role == 1}"  class="status-badge level_1">Уровень 1</div>
-                    <div th:if="${user.role == 0}"  class="status-badge level_2">Уровень 2</div>
-                    <button class="menu-btn">⋮</button>
-
-                    <!-- Выпадающее меню (изначально скрыто) -->
-                    <div class="dropdown-menu">
-                        <button class="dropdown-item"  th:data-filename="${user.id}">Изменить</button>
-                        <button class="dropdown-item"  th:data-filename="${user.id}">Удалить</button>
-                    </div>
-                </div>
-            </div>
-            <button class="add-file-btn" onclick="openAddUserModal()">+ Добавить пользователя</button>
-        </div>
-    </div>
 </div>
 
 <!-- Кнопка "Создать отчёт" -->
@@ -188,7 +143,8 @@
   </div>
 </div>
 
-<script th:src="@{/js/main.js}"></script>
+<script th:src="@{/js/files.js}"></script>
+<script th:src="@{/js/common.js}"></script>
 
 </body>
 </html>

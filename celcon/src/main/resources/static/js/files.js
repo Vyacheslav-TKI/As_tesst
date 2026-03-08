@@ -87,24 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-
-    // ========== Профиль ==========
-    const profileBtn = document.querySelector('.myprofile-btn');
-    const profileMenu = document.getElementById('profileInfoMenu');
-
-    if (profileBtn && profileMenu) {
-        profileBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            profileMenu.style.display = profileMenu.style.display === 'flex' ? 'none' : 'flex';
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!profileMenu.contains(e.target) && e.target !== profileBtn) {
-                profileMenu.style.display = 'none';
-            }
-        });
-    }
-
     // ========== Выпадающие меню (⋮) ==========
     document.addEventListener('click', (e) => {
         // Скрыть все меню
@@ -177,33 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // ========== Отчёт ==========
-    window.toggleAllFiles = function () {
-        const checked = document.getElementById('select-all').checked;
-        document.querySelectorAll('.file-checkbox').forEach(cb => cb.checked = checked);
-    };
-
-    window.generateReport = function () {
-        const from = document.getElementById('rep-from').value;
-        const to = document.getElementById('rep-to').value;
-        if (!from || !to) {
-            alert('Укажите период');
-            return;
-        }
-
-        const selected = Array.from(document.querySelectorAll('.file-checkbox:checked'))
-            .map(cb => cb.value);
-
-        if (selected.length === 0) {
-            alert('Выберите хотя бы один файл');
-            return;
-        }
-
-        const format = document.querySelector('input[name="format"]:checked').value;
-        alert(`Отчёт (${format.toUpperCase()}) за ${from}–${to}, файлов: ${selected.length}`);
-        hideEl('reportModal');
-    };
-
     // ========== Добавление файла ==========
     window.confirmAddFile = function () {
         const path = document.getElementById('filePath').value.trim();
@@ -242,60 +197,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error(err);
             alert('Не удалось добавить файл');
         });
-    };
-
-    // ========== Выход ==========
-    window.exitProfile = function () {
-        fetch('/api/logout', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.redirectUrl) {
-                window.location.href = data.redirectUrl;
-            }
-        })
-        .catch(err => {
-            console.error('Logout error:', err);
-            alert('Ошибка при выходе');
-        });
-    };
-
-    // ========== График ==========
-    const chartCanvas = document.getElementById('statsChart');
-    if (chartCanvas) {
-        const ctx = chartCanvas.getContext('2d');
-        // Инициализируем с демо-данными
-        window.statsChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['10.11', '11.11', '12.11', '13.11', '14.11', '15.11', '16.11', '17.11', '18.11', '19.11', '20.11'],
-                datasets: [{
-                    label: 'Изменённые файлы',
-                    data: [2, 0, 1, 3, 0, 0, 1, 2, 0, 1, 0],
-                    borderColor: '#007bff',
-                    tension: 0.3,
-                    fill: false
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: true }
-                },
-                scales: {
-                    y: { beginAtZero: true, ticks: { stepSize: 1 } }
-                }
-            }
-        });
-    }
-
-    // Обновление графика (пока заглушка)
-    window.updateChart = function () {
-        const from = document.getElementById('date-from').value;
-        const to = document.getElementById('date-to').value;
-        alert(`График обновлён за период: ${from} – ${to}\n(в будущем — запрос к API)`);
     };
 });
 

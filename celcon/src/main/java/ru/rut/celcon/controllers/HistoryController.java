@@ -42,6 +42,20 @@ public class HistoryController {
             return "redirect:/auth";
         }
 
+        model.addAttribute("userFio", session.getAttribute("userFio"));
+        int userLevel = Integer.parseInt(String.valueOf(session.getAttribute("userLevel")));
+        if (userLevel == 2) {
+            model.addAttribute("userLevel", "Администратор");
+        } else if (userLevel == 1) {
+            model.addAttribute("userLevel", "Пользователь уровня 1");
+        } else if (userLevel == 0) {
+            model.addAttribute("userLevel", "Пользователь уровня 2");
+        } else {
+            model.addAttribute("userLevel", "");
+        }
+        model.addAttribute("userPost", session.getAttribute("userPost"));
+        model.addAttribute("isAdmin",session.getAttribute("isAdmin"));
+
 
         try {
             LocalDate endDate = dateTo != null ? dateTo : LocalDate.now();

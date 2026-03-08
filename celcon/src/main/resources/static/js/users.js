@@ -6,36 +6,6 @@ function closeAddUserModal() {
     document.getElementById('addUserModal').style.display = 'none';
 }
 
-// ========== Профиль ==========
-function showProfileInfo() {
-    const menu = document.getElementById('profileInfoMenu');
-    menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-}
-function exitProfile() {
-    fetch('/api/logout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.redirectUrl) {
-            window.location.href = data.redirectUrl;
-        }
-    })
-    .catch(err => {
-        alert('Ошибка при выходе');
-    });
-}
-
-// Закрыть профиль при клике вне
-document.addEventListener('click', (e) => {
-    const menu = document.getElementById('profileInfoMenu');
-    const btn = document.querySelector('.myprofile-btn');
-    if (menu && btn && !menu.contains(e.target) && e.target !== btn) {
-        menu.style.display = 'none';
-    }
-});
-
 // ========== Выпадающее меню (⋮) ==========
 document.addEventListener('click', (e) => {
     // Скрыть все

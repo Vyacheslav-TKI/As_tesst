@@ -299,33 +299,23 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 });
 
-function updateFileStatus(fileId, changed) {
-    // Используем шаблонную строку с обратными кавычками
-    const fileItem = document.querySelector(`[data-file-id="${fileId}"]`);
-    if (!fileItem) {
-        console.warn("Файл с id=" + fileId + " не найден на странице");
-        return;
-    }
+function updateFileStatus(fileId, newStatus) { // newStatus: 'pending', 'changed', 'unchanged'
+    const statusElement = document.getElementById(`status-${fileId}`);
 
-    const statusBadge = fileItem.querySelector('.status-badge');
-    if (statusBadge) {
-        switch (changed) {
-        case "changed":
-            statusBadge.className = 'status-badge changed';
-            statusBadge.textContent = 'ИЗМЕНЁН';
-            statusBadge.setAttribute('data-status', 'changed');
-            break;
-        case "unchanged":
-            statusBadge.className = 'status-badge unchanged';
-            statusBadge.textContent = 'НЕ ИЗМЕНЁН';
-            statusBadge.setAttribute('data-status', 'unchanged');
-            break;
-        default:
-            statusBadge.className = 'status-badge pending';
-            statusBadge.textContent = 'ПОДОЖДИТЕ...';
-            statusBadge.setAttribute('data-status', 'pending');
-        }
-    } else {
-        console.warn("Элемент .status-badge не найден для файла с id=" + fileId);
+    if (statusElement) {
+        // Обновляем CSS классы
+        statusElement.classList.remove('pending', 'changed', 'unchanged');
+        statusElement.classList.add(newStatus);
+
+        // Обновляем data атрибут
+        statusElement.dataset.status = newStatus;
+
+        // Обновляем текст
+        const statusText = {
+            'pending': 'ПРОВЕРЯЕТСЯ',
+            'changed': 'ИЗМЕНЁН',
+            'unchanged': 'НЕ ИЗМЕНЁН'
+        };
+        statusElement.textContent = statusText[newStatus];
     }
 }

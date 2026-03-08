@@ -251,7 +251,42 @@ public class NetClient implements AutoCloseable {
                         int id = (Integer)fileObj.get("id");
                         String path = (String) fileObj.get("path");
                         String name = extractFileName(path);
-                        return new FileInfo(id, name, path, false);
+                        return new FileInfo(id, name, path);
+                    })
+                    .toList();
+        });
+    }
+
+    public List<FileChange> getFileChanges(String sessionId, long dateBegin, long dateEnd) {
+        Map<String, Object> command = Map.of(
+                "cmd", "STAT",
+                "session_id", sessionId,
+                "date", Map.of("date_begin", dateBegin, "date_end", dateEnd)
+        );
+
+        return executeCommand(command, response -> {
+            Integer code = (Integer) response.get("code");
+            if (code == null || code != 200) {
+                String errorMsg = (String) response.getOrDefault("answ", "Unknown error");
+                throw new RuntimeException("STAT failed: ");
+            }
+
+            List<Map<String, Object>> changes = (List<Map<String, Object>>) response.get("changes");
+            if (changes == null) {
+                return List.of();
+            }
+            System.out.println(response);
+
+            return changes.stream()
+                    .map(ChangeObj -> {
+                        int changeId = (Integer) ChangeObj.get("change_id");
+                        int fileId = (Integer) ChangeObj.get("file_id");
+                        String path = (String) ChangeObj.get("file_path");
+                        int hashAlgorithm = (Integer) ChangeObj.get("alg");
+                        String baselineHash = (String) ChangeObj.get("baseline_hash");
+                        String newHash = (String) ChangeObj.get("new_hash");
+                        long timestamp = Long.parseLong(String.valueOf(ChangeObj.get("timestamp")));
+                        return new FileChange(changeId, fileId, path, hashAlgorithm, baselineHash, newHash, timestamp);
                     })
                     .toList();
         });

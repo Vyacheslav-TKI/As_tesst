@@ -269,6 +269,30 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// В history.js
+function shortenPathStart(path, maxLength = 40) {
+    if (!path || path.length <= maxLength) return path;
+
+    const fileName = path.split('/').pop() || path;
+    const pathWithoutFile = path.substring(0, path.length - fileName.length);
+
+    if (fileName.length > maxLength - 3) {
+        return '...' + fileName.substring(fileName.length - (maxLength - 3));
+    }
+
+    const availableForPath = maxLength - fileName.length - 3;
+    const shortenedPath = '...' + pathWithoutFile.substring(pathWithoutFile.length - availableForPath);
+
+    return shortenedPath + fileName;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.path-content').forEach(el => {
+        const fullPath = el.textContent.trim();
+        el.textContent = shortenPathStart(fullPath, 40);
+    });
+});
+
 // Инициализация при загрузке
 document.addEventListener('DOMContentLoaded', function() {
     const table = document.querySelector('.history-table');

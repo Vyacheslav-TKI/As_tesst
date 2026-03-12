@@ -134,10 +134,13 @@
             <td class="history-file-id" th:text="${change.fileId}"
                 th:title="|ID: ${change.fileId}|">0</td>
 
-            <td class="history-hash"
-                th:text="${#strings.abbreviate(change.baselineHash, 30)}"
-                th:title="|Эталонный: ${change.baselineHash}|">
-                baseline_hash
+            <td class="history-file-path">
+                <span class="path-content"
+                      th:text="${change.path}"
+                      th:attrdata-full-path="${change.path}"
+                      th:title="${change.path}">
+                        /path/to/file
+                </span>
             </td>
 
             <!-- Вариант 3: через #strings.concat() -->

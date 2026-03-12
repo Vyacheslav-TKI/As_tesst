@@ -115,6 +115,57 @@
     <div class="chart-container">
         <canvas id="statsChart"></canvas>
     </div>
+
+
+    <div class="history-table-container">
+    <table class="history-table">
+        <thead>
+        <tr>
+            <th>ID файла</th>
+            <th>Путь</th>
+            <th>Эталонный хэш</th>
+            <th>Новый хэш</th>
+            <th>Дата</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="change : ${changes}" th:data-id="${change.changeId}">
+            <!-- Вариант 1: используем |...| (литералы) -->
+            <td class="history-file-id" th:text="${change.fileId}"
+                th:title="|ID: ${change.fileId}|">0</td>
+
+            <td class="history-hash"
+                th:text="${#strings.abbreviate(change.baselineHash, 30)}"
+                th:title="|Эталонный: ${change.baselineHash}|">
+                baseline_hash
+            </td>
+
+            <!-- Вариант 3: через #strings.concat() -->
+            <td class="history-hash"
+                th:text="${#strings.abbreviate(change.baselineHash, 30)}"
+                th:title="|Эталонный: ${change.baselineHash}|">
+                baseline_hash
+            </td>
+
+            <td class="history-hash"
+                th:text="${#strings.abbreviate(change.currentHash, 20)}"
+                th:title="|Текущий: ${change.currentHash}|">
+                current_hash
+            </td>
+
+            <td class="history-date"
+                th:text="${#dates.format(new java.util.Date(change.timestamp * 1000), 'dd.MM.yyyy HH:mm')}"
+                th:title="${#dates.format(new java.util.Date(change.timestamp * 1000), 'dd.MM.yyyy HH:mm:ss')}">
+                09.03.2026 15:30
+            </td>
+        </tr>
+
+        <tr class="empty-state" th:if="${#lists.isEmpty(changes)}">
+            <td colspan="5" class="empty-message">Нет файлов для отображения</td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
 </div>
 
 <script th:inline="javascript">

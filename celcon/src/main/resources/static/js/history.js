@@ -187,6 +187,96 @@ function initChart() {
     console.log('Chart created successfully');
 }
 
+// Функционал изменения размера колонок как в Excel
+function makeResizable(table) {
+    const cols = table.querySelectorAll('th');
+    let currentResize;
+
+    cols.forEach(col => {
+        const handle = document.createElement('div');
+        handle.className = 'resize-handle';
+        col.appendChild(handle);
+
+        handle.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            currentResize = {
+                col: col,
+                startX: e.pageX,
+                startWidth: col.offsetWidth
+            };
+
+            document.body.classList.add('resizing');
+
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+    });
+
+    function onMouseMove(e) {
+        if (!currentResize) return;
+
+        const diff = e.pageX - currentResize.startX;
+        const newWidth = Math.max(50, currentResize.startWidth + diff);
+
+        // Устанавливаем новую ширину
+        currentResize.col.style.width = newWidth + 'px';
+
+        // Обновляем ширину всех ячеек в колонке
+        const index = currentResize.col.cellIndex;
+        const rows = table.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const cell = row.cells[index];
+            if (cell) {
+                cell.style.width = newWidth + 'px';
+            }
+        });
+    }
+
+    function onMouseUp() {
+        document.body.classList.remove('resizing');
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+        currentResize = null;
+    }
+}
+
+// Добавьте в history.js
+document.addEventListener('DOMContentLoaded', function() {
+    // Обрезаем SHA-256 хэши до формата "abcd...wxyz"
+    document.querySelectorAll('.history-hash').forEach(el => {
+        const fullHash = el.textContent.trim();
+        if (fullHash && fullHash.length > 20) {
+            const shortHash = fullHash.substring(0, 8) + '...' + fullHash.substring(fullHash.length - 8);
+            el.textContent = shortHash;
+            el.setAttribute('data-full-hash', fullHash);
+
+            // Добавляем тултип с полным хэшем
+            el.setAttribute('title', 'Полный хэш: ' + fullHash);
+        }
+    });
+
+    // Для длинных путей
+    document.querySelectorAll('.history-file-path').forEach(el => {
+        const fullPath = el.textContent.trim();
+        if (fullPath && fullPath.length > 40) {
+            const pathParts = fullPath.split('/');
+            const fileName = pathParts.pop() || '';
+            const shortPath = '.../' + fileName;
+            el.textContent = shortPath;
+            el.setAttribute('data-full-path', fullPath);
+            el.setAttribute('title', fullPath);
+        }
+    });
+});
+
+// Инициализация при загрузке
+document.addEventListener('DOMContentLoaded', function() {
+    const table = document.querySelector('.history-table');
+    if (table) {
+        makeResizable(table);
+    }
+});
+
 // Запускаем после загрузки DOM
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded');

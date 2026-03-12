@@ -75,6 +75,6 @@ public class FileChange {
         this.fileId = fileId;
     }
     public String toString() {
-        return "path: " + path + " timestamp: " + timestamp;
+        return "path: " + path + " timestamp: " + timestamp + "\n";
     }
 }

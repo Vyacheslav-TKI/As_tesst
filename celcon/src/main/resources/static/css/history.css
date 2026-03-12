@@ -1,0 +1,149 @@
+/* ===== ТАБЛИЦА ИСТОРИИ ===== */
+.history-table-container {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    overflow-x: auto;
+    margin: 20px 0;
+    border: 1px solid #e9ecef;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    table-layout: fixed; /* Включаем фиксированную разметку */
+}
+
+/* Заголовки с явной шириной */
+.history-table thead tr {
+    background: #f8f9fa;
+}
+
+.history-table th {
+    padding: 16px 20px;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+/* Задаём ширину колонок */
+.history-table th:nth-child(1) { width: 80px; }   /* ID */
+.history-table th:nth-child(2) { width: 250px; }  /* Путь */
+.history-table th:nth-child(3) { width: 120px; }  /* Эталонный хэш */
+.history-table th:nth-child(4) { width: 120px; }  /* Новый хэш */
+.history-table th:nth-child(5) { width: 160px; }  /* Дата */
+
+/* Ячейки */
+.history-table td {
+    padding: 28px 80px;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+    overflow: hidden; /* Важно! */
+}
+
+/* ID файла */
+.history-file-id {
+    text-align: center;
+    font-weight: 500;
+    color: #6c757d;
+    font-family: monospace;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Путь к файлу с сокращением */
+.history-file-path {
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+    font-size: 13px;
+    color: #212529;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Хэши с сокращением */
+.history-hash {
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+    font-size: 12px;
+    color: #495057;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    background: #f8f9fa;
+    border-radius: 3px;
+}
+
+/* Дата */
+.history-date {
+    font-family: monospace;
+    font-size: 12px;
+    color: #6c757d;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Чередование строк */
+.history-table tbody tr:nth-child(even) td {
+    background-color: #fcfcfc;
+}
+
+.history-table tbody tr:hover td {
+    background-color: #f0f7ff;
+}
+
+/* Пустое состояние */
+.empty-state td {
+    padding: 40px;
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    background: #f8f9fa;
+}
+
+/* Стили для тултипов при наведении */
+.history-file-path:hover,
+.history-hash:hover {
+    position: relative;
+    overflow: visible;
+}
+
+.history-file-path:hover::after,
+.history-hash:hover::after {
+    content: attr(title);
+    position: absolute;
+    left: 0;
+    top: 100%;
+    background: #212529;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: normal;
+    word-break: break-all;
+    max-width: 400px;
+    min-width: 200px;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    font-family: monospace;
+}
+
+/* Добавляем стрелочку к тултипу */
+.history-file-path:hover::before,
+.history-hash:hover::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 100%;
+    margin-top: -8px;
+    border-width: 8px;
+    border-style: solid;
+    border-color: transparent transparent #212529 transparent;
+    z-index: 1001;
+}

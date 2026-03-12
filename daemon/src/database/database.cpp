@@ -60,6 +60,12 @@ void Database::initialize_tables() {
                 "RAISE(ABORT, 'File has not changed since last check') "
         "END;"
     "END;",
+
+    "CREATE TABLE IF NOT EXISTS SessionLog ("
+        "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "UserID INTEGER NOT NULL,"
+        "Time INTEGER NOT NULL"
+    ");",
         nullptr
     };
 

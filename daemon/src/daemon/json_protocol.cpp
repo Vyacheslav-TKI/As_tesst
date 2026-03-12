@@ -81,6 +81,15 @@ std::optional<StatRequest> JsonProtocol::parse_stat(const json& j) {
     };
 }
 
+std::optional<SessionsLogRequest> JsonProtocol::parse_sessions_log(const json& j) {
+    if (!j.contains("session_id"))
+        return std::nullopt;
+
+    return SessionsLogRequest{
+        .session_id = j["session_id"]
+    };
+}
+
 std::optional<DeleteUserRequest> JsonProtocol::parse_delete_user(const json& j) {
     if (!j.contains("session_id") || !j.contains("user_id"))
         return std::nullopt;

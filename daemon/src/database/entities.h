@@ -27,3 +27,9 @@ struct ChangeRecord {
     std::string new_hash;
     time_t timestamp = 0;
 };
+
+struct SessionLog {
+    int id = -1;
+    int user_id = -1;
+    time_t timestamp = 0;
+};

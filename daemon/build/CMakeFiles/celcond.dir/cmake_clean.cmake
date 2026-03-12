@@ -19,6 +19,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/celcond.dir/src/database/database.cpp.o.d"
   "CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.o"
   "CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.o.d"
+  "CMakeFiles/celcond.dir/src/database/session_log_dao.cpp.o"
+  "CMakeFiles/celcond.dir/src/database/session_log_dao.cpp.o.d"
   "CMakeFiles/celcond.dir/src/database/user_dao.cpp.o"
   "CMakeFiles/celcond.dir/src/database/user_dao.cpp.o.d"
   "CMakeFiles/celcond.dir/src/main.cpp.o"

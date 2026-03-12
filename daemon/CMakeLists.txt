@@ -20,6 +20,7 @@ add_executable(celcond
     src/database/user_dao.cpp            # ← для login_exists, add_user
     src/database/monitored_file_dao.cpp  # ← для add_file, get_all
     src/database/change_history_dao.cpp
+    src/database/session_log_dao.cpp
 )
 
 target_include_directories(celcond PRIVATE src)

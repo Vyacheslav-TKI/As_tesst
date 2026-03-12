@@ -5,6 +5,8 @@
 #include <string>
 #include <optional>
 #include <vector>
+#include <unordered_map>
+#include <set>
 
 class UserDAO {
 private:
@@ -15,6 +17,7 @@ public:
 
     bool delete_user(const std::string& user_id);
     std::optional<User> get_by_login(const std::string& login);
+    std::unordered_map<int, User> get_by_ids(std::set<int> user_ids);
     bool add_user(const User& user);
     std::vector<User> get_all_users();
     bool update_user(const User& user);

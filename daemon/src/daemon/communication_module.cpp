@@ -22,12 +22,14 @@ CommunicationModule::CommunicationModule(
     UserDAO* user_dao,
     MonitoredFileDAO* file_dao,
     ChangeHistoryDAO* history_dao,
+    SessionLogDAO *session_log_dao,
     File_watcher& watcher
 )
     : hasher_(hasher)
     , user_dao_(user_dao)
     , file_dao_(file_dao)
     , history_dao_(history_dao)
+    , session_log_dao_(session_log_dao)
     , watcher_(watcher)
     , db_(db)
     , auth_manager_(user_dao)
@@ -124,6 +126,7 @@ json CommunicationModule::process_auth(const json& req) {
     auto sid = auth_manager_.authenticate(login, password);
     if (sid) {
         User user = user_dao_->get_by_login(login).value();
+        session_log_dao_->log_session(user.id);
         return {{"code", 200}, {"answ", "ok"}, {"session_id", *sid}, {"fio", user.fio}, {"post", user.post}, {"role", user.role}};
     } else {
         return {{"code", 401}, {"answ", "unauthorized"}};
@@ -236,7 +239,7 @@ json CommunicationModule::process_stat(const json& req) {
         return JsonProtocol::make_error(400, "invalid STAT request");
     }
 
-    if (!auth_manager_.validate_session(parsed->session_id, /*min_role=*/2)) {
+    if (!auth_manager_.validate_session(parsed->session_id, /*min_role=*/0)) {
         return JsonProtocol::make_error(403, "only users since level 2 can list users");
     }
 
@@ -340,6 +343,42 @@ json CommunicationModule::process_delete_user(const json& req) {
     return JsonProtocol::make_success();
 }
 
+json CommunicationModule::process_sessions_log(const json &req) {
+    auto parsed = JsonProtocol::parse_sessions_log(req);
+     if (!parsed) {
+        return JsonProtocol::make_error(400, "invalid SESSIONS_LOG request");
+    }
+    if (!auth_manager_.validate_session(parsed->session_id, /*min_role=*/2)) {
+        return JsonProtocol::make_error(403, "only admin can request sessions logs");
+    }
+    std::vector<SessionLog> session_logs = session_log_dao_->list_all_sessions();
+
+    std::set<int> user_ids;
+    for (const SessionLog &sl: session_logs) {
+        user_ids.insert(sl.user_id);
+    }
+
+    auto users_map = user_dao_->get_by_ids(user_ids);
+
+    json sessions_log_array = json::array();
+    for (const SessionLog &sl: session_logs) {
+        auto it = users_map.find(sl.user_id);
+        if (it != users_map.end()) {
+            User user = it->second;
+            sessions_log_array.push_back({
+                {"id", sl.id},
+                {"fio", user.fio},
+                {"timestamp", sl.timestamp}
+            });
+        }
+    }
+    return json{
+        {"code", 200},
+        {"answ", "ok"},
+        {"sessions_log", sessions_log_array}
+    };
+}
+
 void CommunicationModule::handle_incoming() {
     if (!client_connected_) {
         struct sockaddr_in client_addr;
@@ -433,6 +472,9 @@ void CommunicationModule::handle_command(const std::string& raw) {
         }
         else if (*cmd == "LIST_USERS") {
             send_json(process_list_users(j));
+        }
+        else if (*cmd == "SESSIONS_LOG") {
+            send_json(process_sessions_log(j));
         }
         else if (*cmd == "STAT") {
             send_json(process_stat(j));

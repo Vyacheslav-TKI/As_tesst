@@ -5,6 +5,7 @@
 #include "integrity_checker.h"
 #include "../database/user_dao.h"
 #include "../database/monitored_file_dao.h"
+#include "../database/session_log_dao.h"
 #include "../database/change_history_dao.h"
 #include <string>
 #include <memory>
@@ -34,6 +35,7 @@ private:
     UserDAO* user_dao_;
     MonitoredFileDAO* file_dao_;
     ChangeHistoryDAO* history_dao_;
+    SessionLogDAO *session_log_dao_;
 
     std::string recv_buffer_;
 
@@ -53,8 +55,8 @@ private:
     nlohmann::json process_list_users(const nlohmann::json& req);
     nlohmann::json process_stat(const nlohmann::json& req);
     nlohmann::json process_logout(const nlohmann::json& req);
-    nlohmann::json process_delete_user(const json& req);
-    // ... другие команды
+    nlohmann::json process_delete_user(const nlohmann::json& req);
+    nlohmann::json process_sessions_log(const nlohmann::json &req);
 
 public:
     explicit CommunicationModule(
@@ -63,6 +65,7 @@ public:
         UserDAO* user_dao,
         MonitoredFileDAO* file_dao,
         ChangeHistoryDAO* history_dao,
+        SessionLogDAO *session_log_dao,
         File_watcher& watcher
     );
 

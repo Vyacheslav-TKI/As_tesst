@@ -22,12 +22,14 @@ Celcon_daemon::Celcon_daemon()
       user_dao_(std::make_unique<UserDAO>(db_->get_handle())),
       file_dao_(std::make_unique<MonitoredFileDAO>(db_->get_handle())),
       history_dao_(std::make_unique<ChangeHistoryDAO>(db_->get_handle())),
+      session_log_dao_(std::make_unique<SessionLogDAO>(db_->get_handle())),
       comm_(std::make_unique<CommunicationModule>(
           *db_.get(),
           hasher_.get(),
           user_dao_.get(),
           file_dao_.get(),
           history_dao_.get(),
+          session_log_dao_.get(),
           *watcher_
       ))
 {

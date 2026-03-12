@@ -37,6 +37,10 @@ struct StatRequest {
     time_t date_end;
 };
 
+struct SessionsLogRequest {
+    std::string session_id;
+};
+
 struct AddUserRequest {
     std::string session_id;
     std::string login;
@@ -73,6 +77,7 @@ public:
     static std::optional<AddUserRequest> parse_add_user(const json& j);
     static std::optional<ListUsersRequest> parse_list_users(const json& j);
     static std::optional<LogoutRequest> parse_logout(const json& j);
+    static std::optional<SessionsLogRequest> parse_sessions_log(const json& j);
 
     // === Формирование ответов ===
     static json make_success();

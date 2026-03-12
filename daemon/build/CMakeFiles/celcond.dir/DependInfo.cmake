@@ -18,6 +18,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/user/Загрузки/celcon/As_tesst/daemon/src/database/change_history_dao.cpp" "CMakeFiles/celcond.dir/src/database/change_history_dao.cpp.o" "gcc" "CMakeFiles/celcond.dir/src/database/change_history_dao.cpp.o.d"
   "/home/user/Загрузки/celcon/As_tesst/daemon/src/database/database.cpp" "CMakeFiles/celcond.dir/src/database/database.cpp.o" "gcc" "CMakeFiles/celcond.dir/src/database/database.cpp.o.d"
   "/home/user/Загрузки/celcon/As_tesst/daemon/src/database/monitored_file_dao.cpp" "CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.o" "gcc" "CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.o.d"
+  "/home/user/Загрузки/celcon/As_tesst/daemon/src/database/session_log_dao.cpp" "CMakeFiles/celcond.dir/src/database/session_log_dao.cpp.o" "gcc" "CMakeFiles/celcond.dir/src/database/session_log_dao.cpp.o.d"
   "/home/user/Загрузки/celcon/As_tesst/daemon/src/database/user_dao.cpp" "CMakeFiles/celcond.dir/src/database/user_dao.cpp.o" "gcc" "CMakeFiles/celcond.dir/src/database/user_dao.cpp.o.d"
   "/home/user/Загрузки/celcon/As_tesst/daemon/src/main.cpp" "CMakeFiles/celcond.dir/src/main.cpp.o" "gcc" "CMakeFiles/celcond.dir/src/main.cpp.o.d"
   )

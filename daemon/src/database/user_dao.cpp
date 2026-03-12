@@ -42,6 +42,54 @@ std::optional<User> UserDAO::get_by_login(const std::string& login) {
     return std::nullopt;
 }
 
+std::unordered_map<int, User> UserDAO::get_by_ids(std::set<int> user_ids) {
+
+    std::unordered_map<int, User> result;
+
+    std::string sql =
+        "SELECT UserID, UserLogin, UserPasswordHash, UserRole, FIO, Post "
+        "FROM Users WHERE UserID IN (";
+    for (size_t i = 0; i < user_ids.size(); ++i) {
+        if (i > 0) sql += ",";
+        sql += "?";
+    }
+    sql += ")";
+
+    sqlite3_stmt* stmt;
+    int rc = sqlite3_prepare_v2(db_, sql.c_str(), -1, &stmt, nullptr);
+    if (rc != SQLITE_OK) {
+        syslog(LOG_ERR, "Failed to prepare get_by_login query: %s", sqlite3_errmsg(db_));
+        return result;
+    }
+
+    int index = 1;
+    for (int user_id : user_ids) {
+        if (sqlite3_bind_int(stmt, index++, user_id) != SQLITE_OK) {
+            sqlite3_finalize(stmt);
+            return result;
+        }
+    }
+
+    if (user_ids.empty() || user_ids.size() > SQLITE_LIMIT_VARIABLE_NUMBER - 1) { // -1 для паттерна
+        return result;
+    }
+
+
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        User u;
+        u.id            = sqlite3_column_int(stmt, 0);  // UserID
+        u.login         = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1)); // UserLogin
+        u.password_hash = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2)); // UserPasswordHash
+        u.role          = sqlite3_column_int(stmt, 3);  // UserRole
+        u.fio           = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4)); // FIO
+        u.post          = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 5)); // Post
+        result[u.id] = u;
+    }
+
+    sqlite3_finalize(stmt);
+    return result;
+}
+
 bool UserDAO::add_user(const User& user) {
     const char* sql = "INSERT INTO Users (UserLogin, UserPasswordHash, UserRole, FIO, Post) VALUES (?, ?, ?, ?, ?)";
     sqlite3_stmt* stmt;

@@ -369,6 +369,30 @@ src/database/monitored_file_dao.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/celcond.dir/build.make CMakeFiles/celcond.dir/src/database/monitored_file_dao.cpp.s
 .PHONY : src/database/monitored_file_dao.cpp.s
 
+src/database/session_log_dao.o: src/database/session_log_dao.cpp.o
+.PHONY : src/database/session_log_dao.o
+
+# target to build an object file
+src/database/session_log_dao.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/celcond.dir/build.make CMakeFiles/celcond.dir/src/database/session_log_dao.cpp.o
+.PHONY : src/database/session_log_dao.cpp.o
+
+src/database/session_log_dao.i: src/database/session_log_dao.cpp.i
+.PHONY : src/database/session_log_dao.i
+
+# target to preprocess a source file
+src/database/session_log_dao.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/celcond.dir/build.make CMakeFiles/celcond.dir/src/database/session_log_dao.cpp.i
+.PHONY : src/database/session_log_dao.cpp.i
+
+src/database/session_log_dao.s: src/database/session_log_dao.cpp.s
+.PHONY : src/database/session_log_dao.s
+
+# target to generate assembly for a file
+src/database/session_log_dao.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/celcond.dir/build.make CMakeFiles/celcond.dir/src/database/session_log_dao.cpp.s
+.PHONY : src/database/session_log_dao.cpp.s
+
 src/database/user_dao.o: src/database/user_dao.cpp.o
 .PHONY : src/database/user_dao.o
 
@@ -456,6 +480,9 @@ help:
 	@echo "... src/database/monitored_file_dao.o"
 	@echo "... src/database/monitored_file_dao.i"
 	@echo "... src/database/monitored_file_dao.s"
+	@echo "... src/database/session_log_dao.o"
+	@echo "... src/database/session_log_dao.i"
+	@echo "... src/database/session_log_dao.s"
 	@echo "... src/database/user_dao.o"
 	@echo "... src/database/user_dao.i"
 	@echo "... src/database/user_dao.s"

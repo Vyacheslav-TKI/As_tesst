@@ -18,6 +18,7 @@
     <a class="tab-btn" th:href="@{/files}">Файлы</a>
     <a class="tab-btn" th:href="@{/history}">Статистика</a>
     <a class="tab-btn active">Пользователи</a>
+    <a class="tab-btn" th:if="${isAdmin}" th:href="@{/sessions_log}">История посещений</a>
 </div>
 
 <button class="myprofile-btn" onclick="showProfileInfo()" th:text="${userFio}">User</button>

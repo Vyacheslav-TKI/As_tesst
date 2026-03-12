@@ -322,6 +322,35 @@ public class NetClient implements AutoCloseable {
         });
     }
 
+    public List<SessionLog> getSessionsLog(String sessionId) {
+        Map<String, Object> command = Map.of(
+                "cmd", "SESSIONS_LOG",
+                "session_id", sessionId
+        );
+
+        return executeCommand(command, response -> {
+            Integer code = (Integer) response.get("code");
+            if (code == null || code != 200) {
+                String errorMsg = (String) response.getOrDefault("answ", "Unknown error");
+                throw new RuntimeException("SESSIONS_LOG failed: " + errorMsg);
+            }
+
+            List<Map<String, Object>> sessionsLog = (List<Map<String, Object>>) response.get("sessions_log");
+            if (sessionsLog == null) {
+                return List.of();
+            }
+
+            List<SessionLog> sessionsLogs = new ArrayList<>();
+            for (Map<String, Object> sl : sessionsLog) {
+                int id = (Integer) sl.get("id");
+                String fio = (String) sl.get("fio");
+                long timestamp = Long.parseLong(String.valueOf(sl.get("timestamp")));
+                sessionsLogs.add(new SessionLog(id, fio, timestamp));
+            }
+            return sessionsLogs;
+        });
+    }
+
     public void logout(String sessionId) {
         Map<String, Object> command = Map.of(
                 "cmd", "LOGOUT",

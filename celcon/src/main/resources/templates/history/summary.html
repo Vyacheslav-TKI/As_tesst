@@ -16,7 +16,7 @@
 <div class="tabs">
     <a class="tab-btn" th:href="@{/files}">Файлы</a>
     <a class="tab-btn active">Статистика</a>
-    <a class="tab-btn" th:href="@{/users}">Пользователи</a>
+    <a class="tab-btn"  th:if="${isAdmin}" th:href="@{/users}">Пользователи</a>
     <a class="tab-btn" th:if="${isAdmin}" th:href="@{/sessions_log}">История посещений</a>
 </div>
 

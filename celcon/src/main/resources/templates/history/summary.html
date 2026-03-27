@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>ЦЕЛКОН — История и статистика</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+
+<header>
+    <h1>ЦЕЛКОН</h1>
+</header>
+
+<div class="tabs">
+    <a class="tab-btn" th:href="@{/files}">Файлы</a>
+    <a class="tab-btn active">Статистика</a>
+    <a class="tab-btn"  th:if="${isAdmin}" th:href="@{/users}">Пользователи</a>
+    <a class="tab-btn" th:if="${isAdmin}" th:href="@{/sessions_log}">История посещений</a>
+</div>
+
+<button class="myprofile-btn" onclick="showProfileInfo()" th:text="${userFio}">User</button>
+
+<div class="profile-info-menu" id="profileInfoMenu">
+    <h2 class="profile-info-item" th:text="${userFio}">User</h2>
+    <h3 class="profile-info-item" th:text="${userPost}">Post</h3>
+    <p class="profile-info-item">Администратор</p>
+    <button class="exit-btn" onclick="exitProfile()">Выйти</button>
+</div>
+
+<button class="report-btn" onclick="openReportModal()">Создать отчёт</button>
+
+<div class="modal" id="reportModal">
+    <div class="modal-content">
+        <h3>Создание отчёта</h3>
+        <div class="form-group">
+            <label>Период</label>
+            <div style="display:flex;gap:10px;">
+                <input type="date" id="rep-from">
+                <span>–</span>
+                <input type="date" id="rep-to">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" id="select-all" width="100%" onchange="toggleAllFiles()"> Выбрать все файлы
+            </label>
+            <div class="file-list-check" id="file-check-list">
+                <div class="file-item" th:each="file : ${files}">
+                    <div class="file-info">
+                        <div class="file-details">
+                            <div class="file-name" th:text="${file.name}">placeholder</div>
+                            <div class="file-path" th:text="${file.path}">/path/to/placeholder</div>
+                        </div>
+                    </div>
+                    <div class="file-controls">
+                        <div class="file-checkbox-wrapper">
+                            <input type="checkbox"
+                                   class="file-checkbox"
+                                   th:id="${'file-' + file.id}"
+                                   th:name="selectedFiles"
+                                   th:value="${file.id}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Формат отчёта</label>
+            <div class="format-group">
+                <label><input type="radio" name="format" value="csv" checked> CSV</label>
+                <label><input type="radio" name="format" value="html"> HTML</label>
+                <label><input type="radio" name="format" value="txt"> TXT</label>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="close-btn" onclick="closeReportModal()">Отмена</button>
+            <button class="submit-btn" onclick="generateReport()">Сформировать</button>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="date-range">
+        <form method="get" action="/history/summary" class="date-form">
+            <div class="date-inputs">
+                <div class="date-field">
+                    <label for="dateFrom">С:</label>
+                    <input type="date"
+                           id="dateFrom"
+                           name="dateFrom"
+                           th:value="${#temporals.format(dateFrom, 'yyyy-MM-dd')}">
+                </div>
+                <div class="date-field">
+                    <label for="dateTo">По:</label>
+                    <input type="date"
+                           id="dateTo"
+                           name="dateTo"
+                           th:value="${#temporals.format(dateTo, 'yyyy-MM-dd')}">
+                </div>
+                <button type="submit" class="apply-btn">Применить</button>
+            </div>
+        </form>
+    </div>
+    <!-- Скрытый div с данными -->
+    <div id="chart-data"
+         style="display: none;"
+         data-changes='[[${changesByDate}]]'
+         data-from='[[${#temporals.format(dateFrom, "yyyy-MM-dd")}]]'
+         data-to='[[${#temporals.format(dateTo, "yyyy-MM-dd")}]]'
+         data-total='[[${totalChanges}]]'>
+    </div>
+
+    <!-- Остальной HTML -->
+    <div class="chart-container">
+        <canvas id="statsChart"></canvas>
+    </div>
+
+
+    <div class="history-table-container">
+    <table class="history-table">
+        <thead>
+        <tr>
+            <th>ID файла</th>
+            <th>Путь</th>
+            <th>Эталонный хэш</th>
+            <th>Новый хэш</th>
+            <th>Дата</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="change : ${changes}" th:data-id="${change.changeId}">
+            <!-- Вариант 1: используем |...| (литералы) -->
+            <td class="history-file-id" th:text="${change.fileId}"
+                th:title="|ID: ${change.fileId}|">0</td>
+
+            <td class="history-file-path">
+                <span class="path-content"
+                      th:text="${change.path}"
+                      th:attrdata-full-path="${change.path}"
+                      th:title="${change.path}">
+                        /path/to/file
+                </span>
+            </td>
+
+            <!-- Вариант 3: через #strings.concat() -->
+            <td class="history-hash"
+                th:text="${#strings.abbreviate(change.baselineHash, 30)}"
+                th:title="|Эталонный: ${change.baselineHash}|">
+                baseline_hash
+            </td>
+
+            <td class="history-hash"
+                th:text="${#strings.abbreviate(change.currentHash, 20)}"
+                th:title="|Текущий: ${change.currentHash}|">
+                current_hash
+            </td>
+
+            <td class="history-date"
+                th:text="${#dates.format(new java.util.Date(change.timestamp * 1000), 'dd.MM.yyyy HH:mm')}"
+                th:title="${#dates.format(new java.util.Date(change.timestamp * 1000), 'dd.MM.yyyy HH:mm:ss')}">
+                09.03.2026 15:30
+            </td>
+        </tr>
+
+        <tr class="empty-state" th:if="${#lists.isEmpty(changes)}">
+            <td colspan="5" class="empty-message">Нет файлов для отображения</td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    window.chartData = {
+        changesByDate: /*[[${changesByDate}]]*/ {},
+        dateFrom: /*[[${#temporals.format(dateFrom, 'yyyy-MM-dd')}]]*/ '',
+        dateTo: /*[[${#temporals.format(dateTo, 'yyyy-MM-dd')}]]*/ '',
+        totalChanges: /*[[${totalChanges}]]*/ 0
+    };
+    console.log('Chart data from server:', window.chartData);
+    /*]]>*/
+</script>
+<script th:src="@{/js/history.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ЦЕЛКОН</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" th:href=@{/css/style.css} />
+</head>
+<body>
+
+<script>
+    // Для обратной совместимости
+    window.legacyMode = false;
+
+    // Проверяем, нужно ли использовать старый режим
+    if (window.location.search.includes('legacy=1')) {
+        window.legacyMode = true;
+    }
+</script>
+
+<header>
+  <h1>ЦЕЛКОН</h1>
+</header>
+
+<div class="tabs">
+    <a class="tab-btn active" data-tab="files">Файлы</a>
+    <a class="tab-btn" th:href="@{/history}">Статистика</a>
+    <a class="tab-btn" th:if="${isAdmin}" th:href="@{/users}">Пользователи</a>
+    <a class="tab-btn" th:if="${isAdmin}" th:href="@{/sessions_log}">История посещений</a>
+</div>
+
+<button class="myprofile-btn" onclick="showProfileInfo()" th:text="${userFio}">User</button>
+
+<div class="profile-info-menu" id="profileInfoMenu">
+  <h2 class="profile-info-item" th:text="${userFio}">User</h2>
+  <h3 class="profile-info-item" th:text="${userPost}">Post</h3>
+  <p class="profile-info-item" th:text="${userLevel}">Level</p>
+  <button class="exit-btn" onclick="exitProfile()">Выйти</button>
+</div>
+
+<div class="container">
+    <h2>Список отслеживания</h2>
+    <br>
+    <div class="file-list">
+      <div class="file-item" th:each="file : ${files}"  th:attr="data-file-id=${file.id}">
+        <div class="file-info">
+          <div class="file-name" th:text="${file.name}">placeholder</div>
+          <div class="file-path" th:text="${file.path}">/path/to/placeholder</div>
+        </div>
+          <div class="file-controls">
+              <div class="status-badge pending"
+                   th:id="'status-' + ${file.id}"
+                   th:attr="data-file-id=${file.id}, data-initial-status=${file.status.cssClass}"
+                   th:text="${file.status.displayName}">
+              </div>
+            <button class="menu-btn" th:if="${hasEditRights}">⋮</button>
+
+            <!-- Выпадающее меню (изначально скрыто) -->
+            <div class="dropdown-menu" th:if="${hasEditRights}">
+              <button class="dropdown-item"  th:data-filename="${file.name}">Изменить</button>
+              <button class="dropdown-item"  th:data-filename="${file.name}">Удалить</button>
+            </div>
+          </div>
+      </div>
+      <button class="add-file-btn" onclick="openAddFileModal()">+ Добавить файл(ы)</button>
+  </div>
+</div>
+
+<!-- Кнопка "Создать отчёт" -->
+<button class="report-btn" onclick="openReportModal()">Создать отчёт</button>
+
+<!-- Модальное окно отчёта -->
+<div class="modal" id="reportModal">
+    <div class="modal-content">
+        <h3>Создание отчёта</h3>
+        <div class="form-group">
+            <label>Период</label>
+            <div style="display:flex;gap:10px;">
+                <input type="date" id="rep-from">
+                <span>–</span>
+                <input type="date" id="rep-to">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" id="select-all" width="100%" onchange="toggleAllFiles()"> Выбрать все файлы
+            </label>
+            <div class="file-list-check" id="file-check-list">
+                <div class="file-item" th:each="file : ${files}">
+                    <div class="file-info">
+                        <div class="file-details">
+                            <div class="file-name" th:text="${file.name}">placeholder</div>
+                            <div class="file-path" th:text="${file.path}">/path/to/placeholder</div>
+                        </div>
+                    </div>
+                    <div class="file-controls">
+                        <div class="file-checkbox-wrapper">
+                            <input type="checkbox"
+                                   class="file-checkbox"
+                                   th:id="${'file-' + file.id}"
+                                   th:name="selectedFiles"
+                                   th:value="${file.id}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Формат отчёта</label>
+            <div class="format-group">
+                <label><input type="radio" name="format" value="csv" checked> CSV</label>
+                <label><input type="radio" name="format" value="html"> HTML</label>
+                <label><input type="radio" name="format" value="txt"> TXT</label>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="close-btn" onclick="closeReportModal()">Отмена</button>
+            <button class="submit-btn" onclick="generateReport()">Сформировать</button>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно выбора файла -->
+<div class="modal" id="addFileModal">
+  <div class="modal-content">
+    <h3>Добавление файла (папки) для отслеживания</h3>
+    <div class="form-group">
+        <div class="form-group">
+            <label>Полный путь к файлу или папке</label>
+            <input type="text" id="filePath" placeholder="/home/user/document.pdf" style="width:100%" />
+        </div>
+      <label>Метод контроля целостности</label>
+      <div class="format-group">
+        <label><input type="radio" name="format" value="md5" checked> MD5</label>
+        <label><input type="radio" name="format" value="sha1"> SHA-1</label>
+        <label><input type="radio" name="format" value="sha256"> SHA-256</label>
+      </div>
+    </div>
+    <div>
+      <button class="close-btn" onclick="closeAddFileModal()">Отмена</button>
+        <button class="submit-btn" onclick="confirmAddFile()">Добавить</button>
+    </div>
+  </div>
+</div>
+
+<script th:src="@{/js/files.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+
+</body>
+</html>

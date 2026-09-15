@@ -6,7 +6,7 @@
 #include <filesystem>
 
 Database::Database(const std::string& path) {
-    std::filesystem::create_directories("/var/lib/celcon");
+    //std::filesystem::create_directories("/var/lib/celcon");
 
     int rc = sqlite3_open(path.c_str(), &db_);
     if (rc != SQLITE_OK) {

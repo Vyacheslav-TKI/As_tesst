@@ -65,8 +65,13 @@ async function confirmAddUser() {
     const password = document.getElementById('userPassword').value;
 
     // Проверяем ВСЕ обязательные поля
-    if (!fio || !post || !role || !login || !password) {
+   if (!fio || !post || !login || !password) {
         alert('Заполните все поля');
+        return;
+    }
+
+   if (![0, 1, 2].includes(role)) {
+        alert('Некорректный уровень доступа');
         return;
     }
 

@@ -2,7 +2,8 @@ let ws;
 let daemonSessionId = null; // Этот ID должен быть получен после аутентификации
 
 function connectWebSocket() {
-    ws = new WebSocket('ws://localhost:8080/events');
+    const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    ws = new WebSocket(`${wsProtocol}//${window.location.host}/events`);
 
     ws.onopen = () => {
         console.log('WebSocket connected');

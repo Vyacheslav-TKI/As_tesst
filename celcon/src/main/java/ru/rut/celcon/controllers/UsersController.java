@@ -23,13 +23,18 @@ public class UsersController {
     }
     @GetMapping("/users")
     public String getUsersData(Model model, HttpSession session) {
-        String sessionId = (String)session.getAttribute("daemonSessionId");
-
+        String sessionId = (String) session.getAttribute("daemonSessionId");
         if (sessionId == null) {
             return "redirect:/auth";
         }
-        model.addAttribute("userFio", session.getAttribute("userFio"));
         int userLevel = Integer.parseInt(String.valueOf(session.getAttribute("userLevel")));
+        if (userLevel != 2) {
+            return "redirect:/files";
+        }
+
+        model.addAttribute("userFio", session.getAttribute("userFio"));
+        // строку "int userLevel = Integer.parseInt(...)" ниже — УДАЛИТЬ,
+        // используем ту же переменную, что объявили выше
         if (userLevel == 2) {
             model.addAttribute("userLevel", "Администратор");
         } else if (userLevel == 1) {
@@ -40,12 +45,12 @@ public class UsersController {
             model.addAttribute("userLevel", "");
         }
         model.addAttribute("userPost", session.getAttribute("userPost"));
-        model.addAttribute("isAdmin",session.getAttribute("isAdmin"));
+        model.addAttribute("isAdmin", session.getAttribute("isAdmin"));
 
-        List<UserInfo> users = netClient.listUsers(sessionId);;
+        List<UserInfo> users = netClient.listUsers(sessionId);
         model.addAttribute("users", users);
         return "users";
-    }
+        }
     @PostMapping("/api/users/add")
     @ResponseBody
     public Map<String, Object> addUser(

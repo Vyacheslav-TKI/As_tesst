@@ -19,13 +19,15 @@ public class SessionsLogController {
     @GetMapping("/sessions_log")
     public String listSessionsLog(Model model, HttpSession session) {
         String sessionId = (String) session.getAttribute("daemonSessionId");
-
         if (sessionId == null) {
             return "redirect:/auth";
         }
-
-        model.addAttribute("userFio", session.getAttribute("userFio"));
         int userLevel = Integer.parseInt(String.valueOf(session.getAttribute("userLevel")));
+        if (userLevel != 2) {
+            return "redirect:/files";
+        
+        }
+        model.addAttribute("userFio", session.getAttribute("userFio"));
         if (userLevel == 2) {
             model.addAttribute("userLevel", "Администратор");
         } else if (userLevel == 1) {

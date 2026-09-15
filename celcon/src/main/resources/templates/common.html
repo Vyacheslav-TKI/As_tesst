@@ -1,0 +1,45 @@
+<!-- templates/report-modal.html -->
+<div class="modal" id="reportModal" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="modal-content">
+        <h3>Создание отчёта</h3>
+        <div class="form-group">
+            <label>Период</label>
+            <div class="period-selector">
+                <input type="date" id="rep-from" class="date-input">
+                <span class="date-separator">–</span>
+                <input type="date" id="rep-to" class="date-input">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="select-all-label">
+                <input type="checkbox" id="select-all" onchange="toggleAllFiles()">
+                <span>Выбрать все файлы</span>
+            </label>
+            <div class="file-list-check" id="file-check-list">
+                <!-- Сюда будут подставляться файлы через Thymeleaf или JavaScript -->
+                <div th:replace="~{${fileListFragment}}"></div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Формат отчёта</label>
+            <div class="format-group">
+                <label class="format-option">
+                    <input type="radio" name="format" value="csv" checked> CSV
+                </label>
+                <label class="format-option">
+                    <input type="radio" name="format" value="html"> HTML
+                </label>
+                <label class="format-option">
+                    <input type="radio" name="format" value="txt"> TXT
+                </label>
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn btn-secondary close-btn" onclick="closeReportModal()">Отмена</button>
+            <button class="btn btn-primary submit-btn" onclick="generateReport()">Сформировать</button>
+        </div>
+    </div>
+</div>

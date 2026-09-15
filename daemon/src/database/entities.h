@@ -24,5 +24,12 @@ struct MonitoredFile {
 struct ChangeRecord {
     int change_id = -1;
     int file_id = -1;
+    std::string new_hash;
+    time_t timestamp = 0;
+};
+
+struct SessionLog {
+    int id = -1;
+    int user_id = -1;
     time_t timestamp = 0;
 };

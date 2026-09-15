@@ -1,5 +1,5 @@
 #pragma once
-#include "json.hpp"
+#include "../common/json.hpp"
 #include <string>
 #include <vector>
 #include <optional>
@@ -35,6 +35,10 @@ struct StatRequest {
     std::string session_id;
     time_t date_begin;
     time_t date_end;
+};
+
+struct SessionsLogRequest {
+    std::string session_id;
 };
 
 struct AddUserRequest {
@@ -73,6 +77,7 @@ public:
     static std::optional<AddUserRequest> parse_add_user(const json& j);
     static std::optional<ListUsersRequest> parse_list_users(const json& j);
     static std::optional<LogoutRequest> parse_logout(const json& j);
+    static std::optional<SessionsLogRequest> parse_sessions_log(const json& j);
 
     // === Формирование ответов ===
     static json make_success();
@@ -83,5 +88,6 @@ public:
 
     // === Формирование событий (push от демона) ===
     static json make_file_changed_event(int file_id, const std::string& path, const std::string& new_hash);
+    static json make_file_unchanged_event(int file_id, const std::string& path, const std::string& new_hash);
     static json make_session_expired_event(const std::string& session_id);
 };

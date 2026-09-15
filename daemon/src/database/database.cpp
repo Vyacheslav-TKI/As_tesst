@@ -43,11 +43,29 @@ void Database::initialize_tables() {
         "CREATE TABLE IF NOT EXISTS ChangeHistory ("
             "ChangeID INTEGER PRIMARY KEY AUTOINCREMENT,"
             "FileID INTEGER NOT NULL,"
+            "NewHash TEXT,"
             "Time INTEGER NOT NULL,"
             "FOREIGN KEY (FileID) REFERENCES MonitoredFiles(FileID) ON DELETE CASCADE"
         ");",
 
-        "CREATE INDEX IF NOT EXISTS idx_time ON ChangeHistory(Time);",
+        "CREATE TRIGGER IF NOT EXISTS PreventDuplicateLastHash "
+    "BEFORE INSERT ON ChangeHistory "
+    "BEGIN "
+        "SELECT CASE "
+            "WHEN ("
+                "SELECT NewHash FROM ChangeHistory "
+                "WHERE FileID = NEW.FileID "
+                "ORDER BY Time DESC LIMIT 1"
+            ") = NEW.NewHash THEN "
+                "RAISE(ABORT, 'File has not changed since last check') "
+        "END;"
+    "END;",
+
+    "CREATE TABLE IF NOT EXISTS SessionLog ("
+        "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "UserID INTEGER NOT NULL,"
+        "Time INTEGER NOT NULL"
+    ");",
         nullptr
     };
 

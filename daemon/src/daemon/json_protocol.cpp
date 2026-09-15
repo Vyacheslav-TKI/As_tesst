@@ -65,6 +65,31 @@ std::optional<AddUserRequest> JsonProtocol::parse_add_user(const json& j) {
     };
 }
 
+std::optional<StatRequest> JsonProtocol::parse_stat(const json& j) {
+    if (!j.contains("session_id") || !j.contains("date") || !j["date"].is_object())
+        return std::nullopt;
+
+    const auto &date_obj = j["date"];
+
+    if (!date_obj.contains("date_begin") || !date_obj.contains("date_end"))
+        return std::nullopt;
+
+    return StatRequest{
+        .session_id = j["session_id"],
+        .date_begin = date_obj["date_begin"],
+        .date_end = date_obj["date_end"]
+    };
+}
+
+std::optional<SessionsLogRequest> JsonProtocol::parse_sessions_log(const json& j) {
+    if (!j.contains("session_id"))
+        return std::nullopt;
+
+    return SessionsLogRequest{
+        .session_id = j["session_id"]
+    };
+}
+
 std::optional<DeleteUserRequest> JsonProtocol::parse_delete_user(const json& j) {
     if (!j.contains("session_id") || !j.contains("user_id"))
         return std::nullopt;
@@ -112,6 +137,15 @@ json JsonProtocol::make_sync_response(const std::vector<MonitoredFile>& files) {
 json JsonProtocol::make_file_changed_event(int file_id, const std::string& path, const std::string& new_hash) {
     return json{
         {"event", "FILE_CHANGED"},
+        {"id", file_id},
+        {"path", path},
+        {"hash", new_hash}
+    };
+}
+
+json JsonProtocol::make_file_unchanged_event(int file_id, const std::string& path, const std::string& new_hash) {
+    return json{
+        {"event", "FILE_UNCHANGED"},
         {"id", file_id},
         {"path", path},
         {"hash", new_hash}

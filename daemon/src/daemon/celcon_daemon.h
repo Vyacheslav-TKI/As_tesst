@@ -6,6 +6,7 @@
 #include "database/user_dao.h"
 #include "database/monitored_file_dao.h"
 #include "database/change_history_dao.h"
+#include "database/session_log_dao.h"
 #include "../database/entities.h"
 
 class CommunicationModule;
@@ -23,6 +24,7 @@ private:
     std::unique_ptr<UserDAO> user_dao_;
     std::unique_ptr<MonitoredFileDAO> file_dao_;
     std::unique_ptr<ChangeHistoryDAO> history_dao_;
+    std::unique_ptr<SessionLogDAO> session_log_dao_;
 
     // Потом модули, зависящие от них
     std::unique_ptr<File_watcher> watcher_;

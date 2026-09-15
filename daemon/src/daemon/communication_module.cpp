@@ -1,16 +1,18 @@
 #include "communication_module.h"
 #include "../database/database.h"
+#include "../database/entities.h"
 #include "utils.h"
 #include "file_watcher.h"
 #include "auth_manager.h"
 #include "json_protocol.h"
-#include "json.hpp"
+#include "../common/json.hpp"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <syslog.h>
 #include <cstring>
+#include <set>
 
 using json = nlohmann::json;
 
@@ -19,11 +21,15 @@ CommunicationModule::CommunicationModule(
     IntegrityChecker* hasher,
     UserDAO* user_dao,
     MonitoredFileDAO* file_dao,
+    ChangeHistoryDAO* history_dao,
+    SessionLogDAO *session_log_dao,
     File_watcher& watcher
 )
     : hasher_(hasher)
     , user_dao_(user_dao)
     , file_dao_(file_dao)
+    , history_dao_(history_dao)
+    , session_log_dao_(session_log_dao)
     , watcher_(watcher)
     , db_(db)
     , auth_manager_(user_dao)
@@ -39,14 +45,23 @@ int CommunicationModule::get_client_fd() const {
 void CommunicationModule::background_integrity_worker(std::vector<MonitoredFile> files) {
     for (const auto& file : files) {
         std::string current_hash = hasher_->compute_hash(file.path, file.algorithm);
+        json event;
         if (current_hash != file.baseline_hash) {
             // Файл изменён — отправляем событие
-            json event = JsonProtocol::make_file_changed_event(
+            event = JsonProtocol::make_file_changed_event(
                 file.file_id, file.path, current_hash
             );
-            // Отправка через TLS — НЕБЛОКИРУЮЩАЯ
-            send_json(event);
+        } else {
+            event = JsonProtocol::make_file_unchanged_event(
+                file.file_id, file.path, current_hash
+            );
         }
+        ChangeRecord rec;
+        rec.file_id = file.file_id;
+        rec.new_hash = current_hash;
+        history_dao_->log_change(rec);
+        // Отправка через TLS — НЕБЛОКИРУЮЩАЯ
+        send_json(event);
     }
     background_check_active_ = false;
 }
@@ -111,6 +126,7 @@ json CommunicationModule::process_auth(const json& req) {
     auto sid = auth_manager_.authenticate(login, password);
     if (sid) {
         User user = user_dao_->get_by_login(login).value();
+        session_log_dao_->log_session(user.id);
         return {{"code", 200}, {"answ", "ok"}, {"session_id", *sid}, {"fio", user.fio}, {"post", user.post}, {"role", user.role}};
     } else {
         return {{"code", 401}, {"answ", "unauthorized"}};
@@ -217,6 +233,54 @@ json CommunicationModule::process_list_users(const json& req) {
     };;
 }
 
+json CommunicationModule::process_stat(const json& req) {
+    auto parsed = JsonProtocol::parse_stat(req);
+    if (!parsed) {
+        return JsonProtocol::make_error(400, "invalid STAT request");
+    }
+
+    if (!auth_manager_.validate_session(parsed->session_id, /*min_role=*/0)) {
+        return JsonProtocol::make_error(403, "only users since level 2 can list users");
+    }
+
+    auto user_opt = auth_manager_.get_user_by_session(parsed->session_id);
+    if (!user_opt) {
+        return JsonProtocol::make_error(401, "session expired");
+    }
+
+
+    std::vector<ChangeRecord> changes = history_dao_->get_by_time_range(parsed->date_begin, parsed->date_end);
+
+    std::set<int> file_ids;
+    for (const auto& change : changes) {
+        file_ids.insert(change.file_id);
+    }
+
+    auto files_map = file_dao_->get_files_by_ids_for_user(file_ids, user_opt->id);
+
+    json stat_array = json::array();
+    for (const ChangeRecord& change : changes) {
+        auto it = files_map.find(change.file_id);
+        if (it != files_map.end()) {
+            MonitoredFile file = it->second;
+            stat_array.push_back({
+                {"change_id", change.change_id},
+                {"file_id", change.file_id},
+                {"file_path", file.path},
+                {"alg", file.algorithm},
+                {"baseline_hash", file.baseline_hash},
+                {"new_hash", change.new_hash},
+                {"timestamp", change.timestamp}
+            });
+        }
+    }
+    return json{
+        {"code", 200},
+        {"answ", "ok"},
+        {"changes", stat_array}
+    };
+}
+
 json CommunicationModule::process_add_user(const json& req) {
     auto parsed = JsonProtocol::parse_add_user(req);
     if (!parsed) {
@@ -277,6 +341,42 @@ json CommunicationModule::process_delete_user(const json& req) {
     }
 
     return JsonProtocol::make_success();
+}
+
+json CommunicationModule::process_sessions_log(const json &req) {
+    auto parsed = JsonProtocol::parse_sessions_log(req);
+     if (!parsed) {
+        return JsonProtocol::make_error(400, "invalid SESSIONS_LOG request");
+    }
+    if (!auth_manager_.validate_session(parsed->session_id, /*min_role=*/2)) {
+        return JsonProtocol::make_error(403, "only admin can request sessions logs");
+    }
+    std::vector<SessionLog> session_logs = session_log_dao_->list_all_sessions();
+
+    std::set<int> user_ids;
+    for (const SessionLog &sl: session_logs) {
+        user_ids.insert(sl.user_id);
+    }
+
+    auto users_map = user_dao_->get_by_ids(user_ids);
+
+    json sessions_log_array = json::array();
+    for (const SessionLog &sl: session_logs) {
+        auto it = users_map.find(sl.user_id);
+        if (it != users_map.end()) {
+            User user = it->second;
+            sessions_log_array.push_back({
+                {"id", sl.id},
+                {"fio", user.fio},
+                {"timestamp", sl.timestamp}
+            });
+        }
+    }
+    return json{
+        {"code", 200},
+        {"answ", "ok"},
+        {"sessions_log", sessions_log_array}
+    };
 }
 
 void CommunicationModule::handle_incoming() {
@@ -372,6 +472,12 @@ void CommunicationModule::handle_command(const std::string& raw) {
         }
         else if (*cmd == "LIST_USERS") {
             send_json(process_list_users(j));
+        }
+        else if (*cmd == "SESSIONS_LOG") {
+            send_json(process_sessions_log(j));
+        }
+        else if (*cmd == "STAT") {
+            send_json(process_stat(j));
         }
         else if (*cmd == "LOGOUT") {
             send_json(process_logout(j));

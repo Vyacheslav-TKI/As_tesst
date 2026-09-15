@@ -7,7 +7,6 @@ IntegrityChecker::IntegrityChecker() {
     algorithms_.reserve(5);
     algorithms_.push_back(std::make_unique<Md5HashAlgorithm>());        // 0 — ВКС
     algorithms_.push_back(std::make_unique<Sha1HashAlgorithm>());       // 1 — Уровень-1
-    algorithms_.push_back(std::make_unique<Sha256TruncatedHashAlgorithm>()); // 2 — Уровень-2
     algorithms_.push_back(std::make_unique<Sha256FullHashAlgorithm>()); // 3 — Уровень-3
     algorithms_.push_back(std::make_unique<Gost94HashAlgorithm>());     // 4 — ГОСТ
 }

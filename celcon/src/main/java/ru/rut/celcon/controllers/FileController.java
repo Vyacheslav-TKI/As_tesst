@@ -125,8 +125,8 @@ public class FileController {
     @PostMapping("/api/files/delete")
     @ResponseBody
     public Map<String, Object> deleteFile(
-            @RequestBody Map<String, Long> request,
-            HttpSession session) {
+        @RequestBody Map<String, Object> request,
+        HttpSession session) {
 
         String sessionId = (String) session.getAttribute("daemonSessionId");
         if (sessionId == null) {
@@ -134,15 +134,13 @@ public class FileController {
         }
 
         try {
-            Long fileId = request.get("id");
-            if (fileId == null) {
+            Object idRaw = request.get("id");
+            if (idRaw == null) {
                 return Map.of("code", 400, "answ", "File ID is required");
             }
+            int fileId = ((Number) idRaw).intValue();
 
-            // Вызываем метод удаления в netClient
-            // netClient.deleteFile(sessionId, fileId);
-            // netClient.sync(sessionId);
-
+            netClient.deleteFiles(sessionId, List.of(fileId));
             return Map.of("code", 200, "answ", "ok");
         } catch (Exception e) {
             return Map.of("code", 500, "answ", "Failed to delete file: " + e.getMessage());

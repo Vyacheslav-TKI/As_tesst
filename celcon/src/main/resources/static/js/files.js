@@ -121,8 +121,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const value = target ? target.textContent.trim() : 'неизвестно';
 
             if (action === 'Удалить') {
-                if (confirm(`Удалить "${value}"?`)) {
-                    alert('Удаление пока не реализовано (нужен ID и API)');
+                const fileId = e.target.getAttribute('data-file-id');
+                if (fileId) {
+                    if (confirm(`Удалить "${value}"?`)) {
+                        deleteFile(Number(fileId));
+                    }
+                }   else {
+                    alert('Удаление пока не реализовано');
                 }
             } else if (action === 'Изменить') {
                 alert('Изменение пока не реализовано');
@@ -219,5 +224,24 @@ function updateFileStatus(fileId, newStatus) { // newStatus: 'pending', 'changed
             'unchanged': 'НЕ ИЗМЕНЁН'
         };
         statusElement.textContent = statusText[newStatus];
+    }
+}
+
+async function deleteFile(fileId) {
+    try {
+        const response = await fetch('/api/files/delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: fileId })
+        });
+        const data = await response.json();
+        if (data.code === 200) {
+            location.reload();
+        } else {
+            alert('Ошибка: ' + (data.answ || 'не удалось удалить файл'));
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Не удалось удалить файл');
     }
 }

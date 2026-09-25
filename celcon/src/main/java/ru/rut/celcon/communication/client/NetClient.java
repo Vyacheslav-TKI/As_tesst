@@ -437,6 +437,23 @@ public class NetClient implements AutoCloseable {
         }
     }
 
+    public void deleteFiles(String sessionId, List<Integer> fileIds) {
+    Map<String, Object> command = Map.of(
+            "cmd", "DELETE_FILES",
+            "session_id", sessionId,
+            "file_ids", fileIds
+    );
+
+    executeCommand(command, response -> {
+        Integer code = (Integer) response.get("code");
+        if (code == null || code != 200) {
+            String msg = (String) response.getOrDefault("answ", "Unknown error");
+            throw new RuntimeException("DELETE_FILES failed: " + msg);
+        }
+        return null;
+    });
+}
+
     private static class SessionConnection implements Closeable {
         private final SSLSocket socket;
         private final BufferedWriter writer;

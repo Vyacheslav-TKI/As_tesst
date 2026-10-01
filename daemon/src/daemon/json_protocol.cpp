@@ -40,6 +40,20 @@ std::optional<AddFilesRequest> JsonProtocol::parse_add_files(const json& j) {
     };
 }
 
+std::optional<DeleteFilesRequest> JsonProtocol::parse_delete_files(const json& j) {
+    if (!j.contains("session_id") || !j["session_id"].is_string()) return std::nullopt;
+    if (!j.contains("files") || !j["files"].is_array()) return std::nullopt;
+
+    std::vector<int> file_ids;
+    for (const auto& f : j["files"]) {
+        file_ids.push_back(f);
+    }
+    return DeleteFilesRequest{
+        .session_id = j["session_id"],
+        .file_ids = std::move(file_ids)
+    };
+}
+
 std::optional<SyncRequest> JsonProtocol::parse_sync(const json& j) {
     if (!j.contains("session_id") || !j["session_id"].is_string()) return std::nullopt;
     return SyncRequest{.session_id = j["session_id"]};

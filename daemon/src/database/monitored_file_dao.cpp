@@ -30,6 +30,25 @@ std::vector<MonitoredFile> MonitoredFileDAO::get_for_user(int user_id) {
     return result;
 }
 
+bool MonitoredFileDAO::delete_files(std::vector<int> file_ids) {
+    std::string sql = "DELETE FROM MonitoredFiles WHERE FileID IN (";
+    for (int i = 0; i < file_ids.size(); ++i) {
+        sql += (i < file_ids.size() - 1 ? "?, " : "?");
+    }
+    sql += ");";
+    sqlite3_stmt* stmt;
+    if (sqlite3_prepare_v2(db_, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        return false;
+    }
+    for (size_t i = 0; i < file_ids.size(); ++i) {
+        sqlite3_bind_int(stmt, i + 1, file_ids[i]);
+    }
+    bool ok = (sqlite3_step(stmt) == SQLITE_DONE);
+    sqlite3_finalize(stmt);
+    syslog(LOG_DEBUG, sqlite3_errmsg(db_));
+    return ok;
+}
+
 bool MonitoredFileDAO::add_file(const MonitoredFile& file) {
     const char* sql = "INSERT INTO MonitoredFiles (FilePath, ForUsers, HashAlgorithm, Hash) VALUES (?, ?, ?, ?)";
     sqlite3_stmt* stmt;

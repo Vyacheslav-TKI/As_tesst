@@ -23,5 +23,6 @@ public:
     bool add_file(const MonitoredFile& file);
     bool update_file(const MonitoredFile& file);
     bool delete_file(int file_id);
+    bool delete_files(std::vector<int> file_ids);
     bool path_exists(const std::string& path);
 };

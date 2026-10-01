@@ -138,6 +138,25 @@ json CommunicationModule::process_logout(const json& req) {
     return {{"code", 200}, {"answ", "ok"}};
 }
 
+json CommunicationModule::process_delete_files(const nlohmann::json& req) {
+    auto parsed = JsonProtocol::parse_delete_files(req);
+    if (!parsed) {
+        return JsonProtocol::make_error(400, "invalid ADD_FILES request");
+    }
+
+    if (!auth_manager_.validate_session(parsed->session_id, /*min_role=*/1)) {
+        return JsonProtocol::make_error(403, "forbidden: insufficient role");
+    }
+
+    auto user_opt = auth_manager_.get_user_by_session(parsed->session_id);
+    if (!user_opt) {
+        return JsonProtocol::make_error(401, "session expired");
+    }
+    if (!file_dao_->delete_files(parsed->file_ids)) {
+        return JsonProtocol::make_error(500, "failed to delete files from DB");
+    }
+}
+
 json CommunicationModule::process_add_files(const json& req) {
     auto parsed = JsonProtocol::parse_add_files(req);
     if (!parsed) {

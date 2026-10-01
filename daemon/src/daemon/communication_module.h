@@ -50,6 +50,7 @@ private:
     void send_json(const nlohmann::json& response);
     nlohmann::json process_auth(const nlohmann::json& req);
     nlohmann::json process_sync(const nlohmann::json& req);
+    nlohmann::json process_delete_files(const nlohmann::json& req);
     nlohmann::json process_add_files(const nlohmann::json& req);
     nlohmann::json process_add_user(const nlohmann::json& req);
     nlohmann::json process_list_users(const nlohmann::json& req);

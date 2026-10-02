@@ -42,10 +42,10 @@ std::optional<AddFilesRequest> JsonProtocol::parse_add_files(const json& j) {
 
 std::optional<DeleteFilesRequest> JsonProtocol::parse_delete_files(const json& j) {
     if (!j.contains("session_id") || !j["session_id"].is_string()) return std::nullopt;
-    if (!j.contains("files") || !j["files"].is_array()) return std::nullopt;
+    if (!j.contains("file_ids") || !j["file_ids"].is_array()) return std::nullopt;
 
     std::vector<int> file_ids;
-    for (const auto& f : j["files"]) {
+    for (const auto& f : j["file_ids"]) {
         file_ids.push_back(f);
     }
     return DeleteFilesRequest{

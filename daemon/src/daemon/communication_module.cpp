@@ -141,7 +141,7 @@ json CommunicationModule::process_logout(const json& req) {
 json CommunicationModule::process_delete_files(const nlohmann::json& req) {
     auto parsed = JsonProtocol::parse_delete_files(req);
     if (!parsed) {
-        return JsonProtocol::make_error(400, "invalid ADD_FILES request");
+        return JsonProtocol::make_error(400, "invalid DELETE_FILES request");
     }
 
     if (!auth_manager_.validate_session(parsed->session_id, /*min_role=*/1)) {

@@ -486,6 +486,9 @@ void CommunicationModule::handle_command(const std::string& raw) {
         else if (*cmd == "DELETE_USER") {
             send_json(process_delete_user(j));
         }
+        else if (*cmd == "DELETE_FILES") {
+            send_json(process_delete_user(j));
+        }
         else if (*cmd == "SYNC") {
             send_json(process_sync(j));
         }

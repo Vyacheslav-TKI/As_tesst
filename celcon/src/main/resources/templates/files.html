@@ -59,8 +59,7 @@
             <!-- Выпадающее меню (изначально скрыто) -->
             <div class="dropdown-menu" th:if="${hasEditRights}">
               <button class="dropdown-item"  th:data-filename="${file.name}">Изменить</button>
-              <button class="dropdown-item"  th:data-filename="${file.name}">Удалить</button></div>
-          </div>
+              <button class="dropdown-item" th:data-filename="${file.name}" th:data-file-id="${file.id}">Удалить</button></div>
       </div>
       <button class="add-file-btn" onclick="openAddFileModal()">+ Добавить файл(ы)</button>
   </div>

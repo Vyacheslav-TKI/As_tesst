@@ -30,22 +30,36 @@ std::vector<MonitoredFile> MonitoredFileDAO::get_for_user(int user_id) {
     return result;
 }
 
-bool MonitoredFileDAO::delete_files(std::vector<int> file_ids) {
-    std::string sql = "DELETE FROM MonitoredFiles WHERE FileID IN (";
-    for (int i = 0; i < file_ids.size(); ++i) {
-        sql += (i < file_ids.size() - 1 ? "?, " : "?");
-    }
-    sql += ");";
-    sqlite3_stmt* stmt;
-    if (sqlite3_prepare_v2(db_, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+bool MonitoredFileDAO::delete_files(const std::vector<int>& file_ids) {
+    if (!db_) {
+        syslog(LOG_ERR, "delete_files: db_ is null");
         return false;
     }
-    for (size_t i = 0; i < file_ids.size(); ++i) {
-        sqlite3_bind_int(stmt, i + 1, file_ids[i]);
+    if (file_ids.empty()) {
+        return true; // нечего удалять
     }
+
+    std::string sql = "DELETE FROM MonitoredFiles WHERE FileID IN (";
+    for (size_t i = 0; i < file_ids.size(); ++i) {
+        sql += (i + 1 < file_ids.size() ? "?, " : "?");
+    }
+    sql += ");";
+
+    sqlite3_stmt* stmt = nullptr;
+    if (sqlite3_prepare_v2(db_, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        syslog(LOG_ERR, "prepare failed: %s", sqlite3_errmsg(db_));
+        return false;
+    }
+
+    for (size_t i = 0; i < file_ids.size(); ++i) {
+        sqlite3_bind_int(stmt, static_cast<int>(i) + 1, file_ids[i]);
+    }
+
     bool ok = (sqlite3_step(stmt) == SQLITE_DONE);
+    if (!ok) {
+        syslog(LOG_ERR, "step failed: %s", sqlite3_errmsg(db_));
+    }
     sqlite3_finalize(stmt);
-    syslog(LOG_DEBUG, sqlite3_errmsg(db_));
     return ok;
 }
 

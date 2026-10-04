@@ -1,7 +1,7 @@
 #include "session_log_dao.h"
 
 bool SessionLogDAO::log_session(int user_id) {
-    char const *sql = "INSERT INTO SessionLog (UserID, Time) VALUES (?, strftime('%s', 'now'))";
+    char const *sql = "INSERT INTO SessionLog (UserID, Time) VALUES (?, strftime('%s', 'now'));";
     sqlite3_stmt *stmt;
     if (sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr) != SQLITE_OK) return false;
     sqlite3_bind_int(stmt, 1, user_id);
@@ -11,7 +11,7 @@ bool SessionLogDAO::log_session(int user_id) {
 }
 
 std::vector<SessionLog> SessionLogDAO::list_all_sessions() {
-    char const *sql = "SELECT ID, UserID, Time FROM SessionLog";
+    char const *sql = "SELECT ID, UserID, Time FROM SessionLog ORDER BY Time DESC;";
     sqlite3_stmt *stmt;
     if (sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr) != SQLITE_OK) {
         return {};

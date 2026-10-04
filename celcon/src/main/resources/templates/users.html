@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>ЦЕЛКОН — Пользователи</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+
+<header>
+    <h1>ЦЕЛКОН</h1>
+</header>
+
+<!-- Навигация: Файлы / Статистика / Пользователи -->
+<div class="tabs">
+    <a class="tab-btn" th:href="@{/files}">Файлы</a>
+    <a class="tab-btn" th:href="@{/history}">Статистика</a>
+    <a class="tab-btn active">Пользователи</a>
+    <a class="tab-btn" th:if="${isAdmin}" th:href="@{/sessions_log}">История посещений</a>
+</div>
+
+<button class="myprofile-btn" onclick="showProfileInfo()" th:text="${userFio}">User</button>
+
+<div class="profile-info-menu" id="profileInfoMenu">
+    <h2 class="profile-info-item" th:text="${userFio}">User</h2>
+    <h3 class="profile-info-item" th:text="${userPost}">Post</h3>
+    <p class="profile-info-item">Администратор</p>
+    <button class="exit-btn" onclick="exitProfile()">Выйти</button>
+</div>
+
+<button class="report-btn" onclick="openReportModal()">Создать отчёт</button>
+
+<div class="modal" id="reportModal">
+    <div class="modal-content">
+        <h3>Создание отчёта</h3>
+        <div class="form-group">
+            <label>Период</label>
+            <div style="display:flex;gap:10px;">
+                <input type="date" id="rep-from">
+                <span>–</span>
+                <input type="date" id="rep-to">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" id="select-all" width="100%" onchange="toggleAllFiles()"> Выбрать все файлы
+            </label>
+            <div class="file-list-check" id="file-check-list">
+                <div class="file-item" th:each="file : ${files}">
+                    <div class="file-info">
+                        <div class="file-details">
+                            <div class="file-name" th:text="${file.name}">placeholder</div>
+                            <div class="file-path" th:text="${file.path}">/path/to/placeholder</div>
+                        </div>
+                    </div>
+                    <div class="file-controls">
+                        <div class="file-checkbox-wrapper">
+                            <input type="checkbox"
+                                   class="file-checkbox"
+                                   th:id="${'file-' + file.id}"
+                                   th:name="selectedFiles"
+                                   th:value="${file.id}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Формат отчёта</label>
+            <div class="format-group">
+                <label><input type="radio" name="format" value="csv" checked> CSV</label>
+                <label><input type="radio" name="format" value="html"> HTML</label>
+                <label><input type="radio" name="format" value="txt"> TXT</label>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="close-btn" onclick="closeReportModal()">Отмена</button>
+            <button class="submit-btn" onclick="generateReport()">Сформировать</button>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <h2>Пользователи</h2>
+    <br>
+    <div class="user-list">
+        <div class="user-item" th:each="user : ${users}">
+            <div class="user-info">
+                <div class="user-fio" th:text="${user.fio}">ФИО</div>
+                <div class="user-post" th:text="${user.post}">Должность</div>
+            </div>
+            <div class="user-controls">
+                <!-- <div th:if="${user.role == 2}" class="status-badge admin">Админ</div>
+                <div th:if="${user.role == 1}" class="status-badge level_1">Уровень 1</div>
+                <div th:if="${user.role == 0}" class="status-badge level_2">Уровень 2</div> -->
+                <button class="menu-btn">⋮</button>
+                <div class="dropdown-menu">
+                    <button class="dropdown-item" th:onclick="|editUser('${user.id}')|">Изменить</button>
+                    <button class="dropdown-item" th:onclick="|deleteUser('${user.id}')|">Удалить</button>
+                </div>
+            </div>
+        </div>
+        <button class="add-file-btn" onclick="openAddUserModal()">+ Добавить пользователя</button>
+    </div>
+</div>
+
+<!-- Модальное окно: Добавить пользователя -->
+<div class="modal" id="addUserModal">
+    <div class="modal-content">
+        <h3>Добавить пользователя</h3>
+        <div class="form-group">
+            <label>ФИО</label>
+            <input type="text" id="userFio" placeholder="Иванов Иван Иванович" style="width:100%" />
+        </div>
+        <div class="form-group">
+            <label>Должность</label>
+            <input type="text" id="userPost" placeholder="Системный администратор" style="width:100%" />
+        </div>
+        <div class="form-group">
+            <label>Уровень доступа</label>
+            <select id="userRole" style="width:100%">
+                <option value="0">Уровень 2 (только просмотр)</option>
+                <option value="1">Уровень 1 (редактирование списка файлов)</option>
+                <option value="2">Администратор</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Логин</label>
+            <input type="text" id="userLogin" placeholder="логин" style="width:100%" />
+        </div>
+        <div class="form-group">
+            <label>Пароль</label>
+            <input type="text" id="userPassword" placeholder="пароль" style="width:100%" />
+        </div>
+        <div class="modal-actions">
+            <button class="close-btn" onclick="closeAddUserModal()">Отмена</button>
+            <button class="submit-btn" onclick="confirmAddUser()">Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/users.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+</body>
+</html>

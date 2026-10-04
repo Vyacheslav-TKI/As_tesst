@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>ЦЕЛКОН — Авторизация</title>
+    <link rel="stylesheet" th:href="@{/css/auth.css}" />
+</head>
+<body>
+
+<div class="auth-container">
+    <div class="auth-card">
+        <h1>ЦЕЛКОН</h1>
+        <p class="subtitle">Авторизация</p>
+
+        <form id="authForm">
+            <div class="form-group">
+                <label for="login">Логин</label>
+                <input type="text" id="login" name="login" required autocomplete="username" />
+            </div>
+
+            <div class="form-group">
+                <label for="token">Пароль</label>
+                <input type="password" id="token" name="token" required autocomplete="off" />
+            </div>
+
+            <div id="errorMsg" class="error-message" style="display: none;"></div>
+
+            <button type="submit" class="login-btn">Войти</button>
+        </form>
+    </div>
+</div>
+
+<script th:src="@{/js/auth.js}"></script>
+
+</body>
+</html>
